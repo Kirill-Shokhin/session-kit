@@ -18,7 +18,6 @@ import ctxlib  # noqa: E402
 R, DIM, RED, YEL, GRN, CYA, MAG = ("\033[0m", "\033[2m", "\033[31m", "\033[33m",
                                    "\033[32m", "\033[36m", "\033[35m")
 ANSI = re.compile(r"\033\[[0-9;]*m")
-WINDOW = {"five_hour": 5 * 3600, "seven_day": 7 * 86400}
 
 
 def vlen(s):
@@ -37,16 +36,6 @@ CUR = "[97m"      # the pace cursor is drawn in bright white: it has to be read
                       # the filled part of the bar and on the empty one, or its place is unclear
 
 
-def bar(pct, width=14, pace=None, col=""):
-    """The spend bar. `pace` is the share of the window until the reset that has already passed:
-    the cursor is put on top of the bar in its own character and color, so that it blends neither
-    into the spend nor into the background."""
-    n = max(0, min(width, int(round(pct * width / 100.0))))
-    cells = ["█"] * n + ["░"] * (width - n)
-    if pace is not None:
-        i = max(0, min(width - 1, int(pace * width / 100.0)))
-        cells[i] = CUR + "│" + (col or R)
-    return "".join(cells)
 
 
 def left(d, c):
@@ -80,7 +69,7 @@ def left(d, c):
     mdl = (d.get("model") or {}).get("display_name")
     if mdl:
         parts.append(DIM + mdl + R)
-    parts.append("%s%s %d%%%s" % (col, bar(pct), round(pct), R))
+    parts.append("%s%s %d%%%s" % (col, ctxlib.bar(pct), round(pct), R))
     if size:
         parts.append(DIM + ctxlib.fmt(used, size) + R)
     # A command is shown in the line ONLY when an action is required from the human. The ritual
@@ -100,7 +89,7 @@ def left_short(d, c):
     col = RED if pct >= c["hard_pct"] else (YEL if pct >= c["soft_pct"] else GRN)
     cur = (d.get("workspace") or {}).get("current_dir") or ""
     return "%s  %s%s %d%%%s" % (CYA + os.path.basename(cur.rstrip("/\\"))[:12] + R,
-                                col, bar(pct, 8), round(pct), R)
+                                col, ctxlib.bar(pct, 8), round(pct), R)
 
 
 def left_ctx_only(d, c):
@@ -109,15 +98,6 @@ def left_ctx_only(d, c):
     return "%s%d%%%s" % (col, round(pct), R)
 
 
-def eta(sec, coarse=False):
-    """How much is left until the reset. The weekly window needs no hours: it is thought of in
-    days anyway, and the extra characters make the terminal truncate the line."""
-    if sec <= 0:
-        return "0m"
-    d, h, m = int(sec // 86400), int(sec % 86400 // 3600), int(sec % 3600 // 60)
-    if d:
-        return "%dd" % d if coarse else "%dd%dh" % (d, h)
-    return "%dh%02dm" % (h, m) if h else "%dm" % m
 
 
 def limit(label, w, width=8):
@@ -130,16 +110,16 @@ def limit(label, w, width=8):
     tail = ""
     if resets:
         left_s = resets - time.time()
-        full = WINDOW.get(label[1], 0)
+        full = ctxlib.LIMIT_WINDOW.get(label[1], 0)
         if full:
             pace = max(0.0, min(100.0, (full - left_s) * 100.0 / full))
-        tail = DIM + "·" + eta(left_s, coarse=(label[1] == "seven_day")) + R
+        tail = DIM + "·" + ctxlib.eta(left_s, coarse=(label[1] == "seven_day")) + R
     if pace is None:
         col = RED if pct >= 90 else (YEL if pct >= 70 else GRN)
     else:                       # overtaking the cursor means the limit runs out before the reset
         over = pct - pace
         col = RED if over >= 20 else (YEL if over >= 5 else CYA)
-    return "%s%s %s%s %d%%%s%s" % (DIM, label[0], col, bar(pct, width, pace, col),
+    return "%s%s %s%s %d%%%s%s" % (DIM, label[0], col, ctxlib.bar(pct, width, pace, CUR + "│" + (col or R)),
                                    round(pct), R, tail)
 
 
@@ -179,8 +159,14 @@ def alarm():
         ev = ctxlib.events(500)
     except Exception:
         return ""
+    # ONLY THE LAST DAY. Without a window the red mark never goes out: a stop from a week ago that
+    # was never followed by a closing kept lighting it up, and a signal that cannot go out stops
+    # being read.
+    cut = time.time() - 86400
     by = {}
     for e in ev:
+        if e.get("ts", 0) < cut:
+            continue
         by.setdefault(e.get("sid"), set()).add(e.get("kind"))
     stuck = sum(1 for ks in by.values() if "block" in ks and "done" not in ks)
     return RED + " !%d" % stuck + R if stuck else ""
@@ -193,9 +179,8 @@ def swarm_line(items, hidden=0):
     return line + (DIM + " +%d" % hidden + R if hidden else "") + alarm()
 
 
-def main():
+def main(d):
     ctxlib.utf8_io()
-    d = ctxlib.stdin_json()
     c = ctxlib.cfg()
     cols = int(os.environ.get("COLUMNS") or 0)
     l, r = left(d, c), right(d)
@@ -226,4 +211,10 @@ def main():
     sys.stdout.write(r or l)
 
 
-main()
+# Under the shield like the hooks: a status line that raises prints nothing and, worse,
+# stops writing the metrics file the watchdog measures the window by — the fill would go
+# unknown and the thresholds silent.
+_D = ctxlib.stdin_json()
+ctxlib.shield(lambda: main(_D), "statusline", _D.get("session_id", ""),
+              ((_D.get("workspace") or {}).get("project_dir")
+               or (_D.get("workspace") or {}).get("current_dir") or ""))

@@ -3,17 +3,20 @@ __pycache__/
 
 # Personal. Never goes to the repository.
 # Thresholds and mode of this machine
-config.json
+/config.json
 # Trail of watchdog firings: paths, projects, session identifiers
-events.jsonl
-# Friction notes naming real projects (the template lives in templates/)
-FEEDBACK.md
+/events.jsonl
+# Friction notes naming real projects. Anchored with a leading slash: an
+# unanchored pattern matches at any depth, and `templates/FEEDBACK.md` —
+# which IS published — survived only by already being tracked.
+/FEEDBACK.md
 # Session journals
-journal/
+/journal/
 # Filled-in frames of real projects
-examples/
-# Personal drafts and earlier versions of commands
-legacy/
-commands/client-doc.md
+/examples/
+# Personal drafts and earlier versions of commands. The whole directory: holding the
+# line by file name meant the next personal command would travel on the first publish.
+/legacy/
+/commands/
 # Personal layer: own glossary and own skills, laid over the public ones
-skills-local/
+/skills-local/

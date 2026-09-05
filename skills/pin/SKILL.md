@@ -20,7 +20,8 @@ progress. This skill is the point where the count returns to reality.
 
 ## PHASE 0 — the previous mark
 
-`.claude/BASELINE.md` and the corresponding tag or commit in git. What the author checked by hand back
+`.claude/BASELINE.md` OF THE WORK — the repository the work lives in, which is not always the one the
+console stands in — and the corresponding tag or commit in its git. What the author checked by hand back
 then, what he considered working, which top-level goals were declared to be next. No mark — this is the
 first pinning: ask the author which state to treat as the starting one, and describe the version from it.
 
@@ -49,7 +50,7 @@ is precisely the progress on the declared goals.
 
 Critic cycles over everything that enters the version: a fresh critic with no context, who has not seen the
 edits and is not hunting for petty nitpicks. It passes when he finds no SIGNIFICANT defects in the
-iteration's changes. The pre-existing and the unrelated go into the agenda, not into a block. The final
+iteration's changes. The pre-existing and the unrelated go into the agenda, not into a blocker. The final
 pass is one cold critic over the artifact as a whole; whoever did the editing does not deliver the final
 verdict.
 
@@ -69,12 +70,22 @@ STOP. Onward only after the author has checked by hand and said that the version
 ## PHASE 5 — pinning
 
 After the confirmation:
-- rewrite `.claude/BASELINE.md`: the mark (a tag or a sha), the date, what exactly the author verified, the
-  content of the version in one line, the top-level goals for the next interval;
-- put a git tag on this commit;
+- rewrite the work's `.claude/BASELINE.md`: the mark — a TAG, not a sha. A sha written into the file is
+  wrong the moment the file is committed: it names the commit before itself, and chasing it with an
+  amend just moves the target. Tag the final commit, name the tag, and check it resolves with
+  `git rev-parse <mark>`; never let a later squash rewrite the commit it points at, since every
+  following session measures its advancement from there. Then the date,
+  read off the machine (`date +%F`, or `Get-Date -Format yyyy-MM-dd` in PowerShell) and not off your own
+  sense of it; what exactly the author verified; the content of the version in one line; the top-level
+  goals for the next interval;
+- put an ANNOTATED tag on this commit — `git tag -a <mark> -m "<what this version is>"`. A plain
+  `git tag` makes a lightweight one, and `git push --follow-tags` does not carry those: the mark
+  would stay on this machine and `git rev-parse <mark>` would fail for everyone else, while the
+  whole count of advancement rests on it resolving;
 - do not delete the previous BASELINE, shift it into the file's history: the sequence of marks is the line
   of real versions, and it shows where the project has been going;
 - tell the author in one line that the mark is set and that the count for the following sessions runs from
   it.
 
-Pushing — by the project policy in `.claude/ritual.md`.
+Pushing — by the policy in the work's `.claude/ritual.md`, read from that repository and not from
+whichever one the console happens to be in. The tag, the diff and the commit go into that repository too.

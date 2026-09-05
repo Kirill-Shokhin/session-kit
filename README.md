@@ -22,13 +22,14 @@ git clone https://github.com/Kirill-Shokhin/session-kit ~/.claude/kit
 python ~/.claude/kit/install.py
 ```
 
-Requires Python 3.8+, nothing else. Restarting Claude Code after installation is not necessary: it
-re-reads the settings by itself.
+Requires Python 3.8+, nothing else. Restart Claude Code afterwards so the settings are picked up.
 
 ```bash
 python ~/.claude/kit/install.py --update              # pull a fresh version and reinstall
-python ~/.claude/kit/install.py --publish "what changed" # send your edits to the repository
+python ~/.claude/kit/install.py --publish "what changed" # publish your edits, then reinstall
+                                                       # (needs your own remote, not this repo)
 python ~/.claude/kit/install.py --dry-run             # see what would be done
+python ~/.claude/kit/install.py --check               # are the installed skills behind the repo
 python ~/.claude/kit/install.py --soft 60 --hard 75   # your own thresholds
 ```
 
@@ -62,6 +63,15 @@ the human.
 The second action stays empty in exactly one case: when only the gate is needed and nothing else.
 Then writing "go" is enough.
 
+**Which work is handed over is decided by the terminal, not by the directory.** `/clear` resets the
+conversation inside the same `claude` process rather than restarting it, so a closing and the intake
+that follows it in the same window carry the same process identity, and the closing that just
+happened there is the one continued. Several windows in one repository do not mix.
+
+A closing from another window, or one whose window cannot be told — the terminal was restarted, the
+session was tidied up from elsewhere — is never handed over silently, and never thrown away either:
+it is offered as a question. A question is the fallback; silence would be the defect.
+
 ## Why one keystroke remains
 
 Only a human can clear the context and continue the work. Checked against the documentation and live:
@@ -87,7 +97,9 @@ that the work stops happening in a live dialogue.
 
 1. **The status line** receives ready-made `context_window.used_percentage` and
    `context_window_size` from Claude Code (it knows about the 200k and 1M windows) and on every tick
-   drops a snapshot into `~/.claude/ctx/<session_id>.json`. It shows the fill level of its own
+   drops a snapshot into `~/.claude/ctx/<session_id>.json`. The hooks keep their flags in a file of
+   their own next to it, `<session_id>.state.json`: the status line rewrites its file every few
+   seconds, and a flag left there was lost on the very first rewrite. It shows the fill level of its own
    window, the swarm — the other live sessions — and the subscription limits: the five-hour and the
    weekly one, with a pace cursor.
 
@@ -136,7 +148,7 @@ that the work stops happening in a live dialogue.
    whoever called them. Their fill level is visible in the swarm line under each task.
 
 5. **A trail is written** into `events.jsonl`: every nudge, threshold, stop and closing. Without it a
-   crooked wording pushes in the wrong direction silently — the firings happen with no human present.
+   crooked wording pushes in the wrong direction silently — the triggers happen with no human present.
    An agent that ran into friction writes a line into `FEEDBACK.md`, and `kit-review` goes through
    what has accumulated and proposes edits. If there was a stop and no closing followed it, a red
    `!N` appears at the end of the swarm line — that is a defect in the wording, not an accident.
@@ -219,8 +231,12 @@ kit/
   ctxlib.py              window state: where it lies, how it is read, how it is computed
   view.py                how the swarm state and the watchdog trail are drawn
   install.py             installation, updating and publishing of edits
+  commands/              slash commands — personal, the whole directory stays out of the repository
+  LICENSE
+  .claude/ritual.md      the kit's own session frame — it is developed by its own ritual
+  .claude/BASELINE.md    the line of versions the author pinned by hand
   config.json            this machine's thresholds (created by the installer)
-  events.jsonl           the trail of watchdog firings (created by itself)
+  events.jsonl           the trail of watchdog triggers (created by itself)
   FEEDBACK.md            friction entries about the ritual (created by the installer from a template)
   hooks/
     guard.py             Stop: reminders, the stop at the threshold, the recheck after the ritual
@@ -248,11 +264,12 @@ kit/
 | `soft_pct` | 60 | do not start new branches, record the forks |
 | `hard_pct` | 75 | stop until `close` has been performed |
 | `snooze_pct` | 5 | by how many percent of the window the watchdog goes quiet after a refusal |
-| `nudge_from` | 20 | from which fill level to start reminding about the journal |
+| `nudge_from` | 20 | from which fill level the reminders start counting (the first arrives a step later) about the journal |
 | `nudge_step` | 10 | and after what increment of the window to repeat |
 | `stale_sec` | 600 | older than this, a reading is marked as "asleep" |
 | `hide_sec` | 120 | older than this, a session is considered closed and is not shown |
 | `panel_sec` | 15 | how many seconds the unfolded swarm panel stays |
+| `handoff_sec` | 43200 | how long a closing stays available to the next session (12 hours) |
 | `panel_on_prompt` | true | whether to unfold the panel after every message |
 | `regate_pct` | 10 | window growth after which the critic gate is armed again |
 | `mode` | autonomous | which body of rules is injected: `autonomous` or `stepwise` |
@@ -261,11 +278,21 @@ kit/
 The closing itself costs 1–5% of the window, so the reserve from 75% is more than enough: the
 threshold was chosen for the sake of the quality of judgment, not for the room the ritual takes.
 
+The detector that recognizes a declared delivery reads English and Russian. Working in a third
+language, add your own wordings to `DONE_RE`/`NEG_RE` in `hooks/guard.py` — otherwise the critic
+gate simply never fires and nothing says why.
+
 ## The personal layer
 
 Everything that pertains to a particular human and their projects does not go to the repository and
-is listed in `.gitignore`: the thresholds, the trail of firings, the friction entries, the session
-journals, the filled-in project frames and the `skills-local/` directory.
+is listed in `.gitignore`: the thresholds, the trail of triggers, the friction entries, the session
+journals, the earlier drafts in `legacy/`, the personal commands in `commands/`, the filled-in
+frames of OTHER projects and the `skills-local/` directory.
+
+The kit's own frame — `.claude/ritual.md` and `.claude/BASELINE.md` — is the exception and is in
+the repository on purpose: the
+kit is developed by its own ritual, and it was the only work living outside one — which is exactly
+how a closing came to name no work at all.
 
 `skills-local/` is the personal layer, arranged in two ways:
 
@@ -282,14 +309,23 @@ journals, the filled-in project frames and the `skills-local/` directory.
 ```bash
 python ~/.claude/kit/bin/ctx.py          # a table of live sessions and limits
 python ~/.claude/kit/bin/ctx.py watch    # the same, refreshed every 5 seconds
-python ~/.claude/kit/bin/ctx.py log 60   # the latest watchdog firings
+python ~/.claude/kit/bin/ctx.py log 60   # the latest watchdog triggers
 python ~/.claude/kit/bin/ctx.py stats    # how they ended
 python ~/.claude/kit/bin/ctx.py clean    # remove session files older than a day
-python ~/.claude/kit/bin/ctx.py done <sid>   # silence the watchdog by hand
+python ~/.claude/kit/bin/ctx.py verified <sid>  # record that the critics' check was run
+python ~/.claude/kit/bin/ctx.py done <sid> <stream> <handoff>   # close a session by hand
 ```
 
-Inside Claude Code this is not needed: the swarm is visible in the status line, and the alarm comes
-as the `!N` mark.
+In PowerShell replace `~` with `$HOME`: it is not expanded in an argument to a native command, and
+the path arrives at Python with the tilde still in it.
+
+Inside Claude Code none of this is needed: the swarm is visible in the status line, and the alarm
+comes as the `!N` mark.
+
+A closing must name the work — the stream AND the path to the handoff it wrote (`-` if it wrote
+none). That pair is the whole of what the next agent is opened with, and a bare name is not enough:
+it would be resolved through the CURRENT directory, and a work living outside that directory would
+be unreachable.
 
 ## Debugging
 
@@ -298,16 +334,24 @@ echo '{"session_id":"t","model":{"display_name":"O"},"workspace":{"current_dir":
 echo '{"session_id":"t","hook_event_name":"Stop"}' | python ~/.claude/kit/hooks/guard.py; echo "code $?"
 ```
 
-Code 2 from the watchdog is normal, that is how it stops the agent. `claude --debug` shows that the
+Code 2 is how the watchdog stops the agent. Run the two snippets in order and the second returns 2:
+the first has just written metrics for that same session id at 76%. Change the id in the second one
+and it returns 0 — a session with neither metrics nor a transcript has no measurable fill. `claude --debug` shows that the
 hooks really are being called. The watchdog stays silent if the session is marked as closed — the
-mark can be removed by deleting its file in `~/.claude/ctx/`. The subscription limits appear only for
+mark lives in `~/.claude/ctx/<session_id>.state.json` and is removed by deleting that file (deleting
+the metrics file next to it changes nothing). The subscription limits appear only for
 Pro and Max subscribers and only after the model's first reply in the session.
 
 ## How to turn it off
 
 Remove the `statusLine` and `subagentStatusLine` keys and the hooks with `kit/hooks/` paths from
-`~/.claude/settings.json` — or restore the `settings.json.bak-*` backup. The skills will remain and
-will keep working by hand.
+`~/.claude/settings.json` — or restore the newest `settings.json.bak-*`. Two more things the installer
+wrote and this does NOT undo:
+
+- `"autoCompactEnabled": false` in the same file — auto-compaction stays off until you set it back;
+- the block between `<!-- session-kit:rules:start -->` and `:end` in `~/.claude/CLAUDE.md`.
+
+The skills stay in `~/.claude/skills` and keep working when called by hand.
 
 ## License
 

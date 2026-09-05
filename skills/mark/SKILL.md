@@ -23,13 +23,17 @@ runs and small fixes do not go into the journal: it is not a work log, it is a m
 
 ## Where
 
-`.claude/journal/<YYYY-MM-DD>-<short task slug>.md` — a file per session (overridable in
-`.claude/ritual.md`). One shared file will not do: it grows, and the closing ritual is forced to read the
+`.claude/journal/<YYYY-MM-DD>-<short task slug>.md` — a file per session, relative to the WORK (its
+`.claude/ritual.md` overrides both the place and the naming), not to the directory the console stands in.
+The date in the name is the day the session BEGAN, read off the machine like the timestamps below — the
+closing takes the name of the archive from this one.
+
+One shared file will not do: it grows, and the closing ritual is forced to read the
 whole history of the project instead of its own session. Provenance rests not on the number of files, but
 on the timestamp, the ban on backdated editing, and git.
 
 On the first entry put a header: the date, the session id, the session's task in one line, and the version
-mark from `.claude/BASELINE.md` that the count runs from.
+mark from the work's `.claude/BASELINE.md` that the count runs from.
 
 ## What it is and what it is not
 
@@ -39,6 +43,21 @@ into the session archive in full. A new agent reads the previous session's hando
 the journal of its own — that is what holds the provenance: it is visible who decided what and when.
 
 ## Format
+
+READ THE TIME OFF THE MACHINE, never off your own sense of it:
+
+```bash
+date +%FT%H:%M                          # Git Bash and other POSIX shells
+```
+```powershell
+Get-Date -Format "yyyy-MM-ddTHH:mm"     # PowerShell
+```
+
+Late in a session the estimate drifts, and it drifts one way: a real session ran from midday to evening
+and stamped its entries past midnight of the NEXT day. By the closing the drift had moved into the name
+of the archive, into the titles of the handoff and the DAG, and into the index — the series of days
+skipped one. A time you cannot recompute is not a record of when something happened, it is a guess
+wearing the clothes of one.
 
 ```
 ## <ISO time> · <short title>

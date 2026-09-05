@@ -6,7 +6,7 @@ argument-hint: [opt. what feels off / which period to look at]
 
 Reviewing the kit. What feels off: $ARGUMENTS.
 
-The rituals are now executed by agents, and part of the firings happen without the author's participation:
+The rituals are now executed by agents, and part of the triggers happen without the author's participation:
 he sees neither the nudges, nor the moment of the stop, nor what the agent did with them. In such a scheme
 a crooked wording pushes the wrong way silently, and for years. This skill is the only place where the
 scheme is checked against itself.
@@ -16,8 +16,8 @@ text.
 
 ## PHASE 0 — what to look at
 
-- `python ~/.claude/kit/bin/ctx.py stats` — a summary of the firings;
-- `python ~/.claude/kit/bin/ctx.py log 200` — the trail itself;
+- `python "$HOME/.claude/kit/bin/ctx.py" stats` — a summary of the triggers;
+- `python "$HOME/.claude/kit/bin/ctx.py" log 200` — the trail itself;
 - `~/.claude/kit/FEEDBACK.md` — the friction entries from the agents;
 - the projects' session journals and archives (`.claude/journal/`, `.claude/sessions/`);
 - the kit's `git log` — what was edited in the skills themselves, and when.

@@ -20,7 +20,7 @@ convergence: a fresh reviewer with no context, who has not seen the edits, again
 until no significant defects remain in that round's changes. The author sees the result of a
 consensus, not the moment the agent felt the work had ended. Running critics is ordinary work — it is
 not reported separately and no permission is asked for it. Once it passes, record it:
-`python ~/.claude/kit/bin/ctx.py verified <session id>`.
+`python "$HOME/.claude/kit/bin/ctx.py" verified <session id>`.
 
 PACE. A finished piece is a reason to start the next one in the same turn. Work runs to the end of
 the plan; the report comes when the plan is exhausted or hits branch 1 or branch 2 above. One front

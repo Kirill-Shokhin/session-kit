@@ -8,9 +8,25 @@ Taking the handoff and opening the session. Stream and focus: $ARGUMENTS.
 
 The goal — by the end of the ritual, to be equivalent to the agent who closed the previous session of THIS
 stream: same language, same causality, same protected positions, a plan for the next step. I write NOTHING
-final before the gate. Take the project frame from `.claude/ritual.md` (what the main document of the
-project is here, where the session docs, the journal and the session archive are, which streams exist, what
-the baseline is checked by, how to commit and whether pushing is allowed).
+final before the gate.
+
+FIRST, WHOSE WORK THIS IS — before reading a single project file. If $ARGUMENTS carries a path to a
+handoff, THAT PATH NAMES THE WORK, and the repository it lies in is the one everything else comes from:
+the frame, the baseline, the journal, the archive, the push policy — and every git command you run. If the
+INVITATION that brought you here lists several closed works instead (the argument is empty in that case),
+ask the author which one, in one line, and do nothing else until he answers.
+
+WITH NEITHER — no path and no list — the current directory is a HYPOTHESIS, not an answer. Read its
+archive, and if it holds exactly one stream, take it and SAY IN THE GATE which work you opened and on
+what evidence. More than one, or none — ask, one line, before reading anything else. What is forbidden
+is the silent version: opening whatever the directory suggests and reporting as if the work had been
+named to you. The subject of a work is not the directory the console stands in — the two come
+apart exactly when it is expensive, and taking the directory's word for it once had an agent restore a
+stream that was not its own, verify it honestly and present a confident gate on it.
+
+Take the frame from the `.claude/ritual.md` OF THAT WORK (what the main document is, where the session
+docs, the journal and the archive are, which streams exist, what the baseline is checked by, how to commit
+and whether pushing is allowed). Reading it from the wrong repository hands you someone else's push policy.
 
 NO FRAME — CREATE IT YOURSELF, do not defer it to the author. Take `~/.claude/kit/templates/ritual.md`, walk
 the repository and fill in with facts everything that can be established by reading: the layout across the
@@ -20,12 +36,14 @@ author about those right here, as a short list, in one message:
 - which document is the main one here, if that is not obvious;
 - whether pushing is allowed in this repository;
 - which streams exist, if there is more than one;
-- what counts as the last version he verified (for `.claude/BASELINE.md`).
+- what counts as the last version he verified — write the answer into the work's `.claude/BASELINE.md`
+  yourself, from `~/.claude/kit/templates/BASELINE.md`, marked [stated]: it is his word, not a check of
+  yours, and `pin` will not ask again.
 Write the answers into the files yourself. The author must not fill anything in by hand: he answers the
 questions, you write the files. Until the answers arrive, work by defaults — pushing forbidden, one stream,
 counting from the current HEAD as a draft.
 
-PHASE 0 — THE SHIFT (the zeroth component, do NOT skip). Read the project's root domain document YOURSELF —
+PHASE 0 — THE SHIFT (do NOT skip it). Read the project's root domain document YOURSELF —
 in full, or its load-bearing parts by the table of contents, but with your own eyes, not through retellings
 from memory: without this the agent does not understand the domain and invents incorrectly. This is the
 shift from the base model to the project's mode of thinking, the precondition for speaking one language at
@@ -34,9 +52,13 @@ one level. Plus the main document's key companions, by the sense of the task.
 PHASE 1 — STREAM, HANDOFF, MEMORY. First determine WHOSE handoff you are taking. The stream is named in
 $ARGUMENTS or follows from the task; streams are logically independent and may run in different worktrees,
 so the freshest file or commit ≠ your handoff — a lesson proven the expensive way. The author holds the
-separation of the streams; your job is not to mistake someone else's for your own. Take:
-(a) the LATEST handoff of your own stream with all its attachments — DAG, vector, holes
-    (`.claude/sessions/`, the top index entry for this stream). What is load-bearing in the DAG are the
+separation of the streams; your job is not to mistake someone else's for your own.
+
+Take:
+(a) the LATEST handoff of your own stream with all its attachments — DAG, vector, holes: the path from
+    $ARGUMENTS, else wherever the work's ritual says its archive is (by default `.claude/sessions/` and the
+    top index entry for this stream; some repositories keep it elsewhere and say so). What is load-bearing
+    in the DAG are the
     edges, the author's intents and the NEGATIVE edges, that is, where the work already went and why that
     was the wrong way. Do not go deeper into the archive without being told: old journals and DAGs lie there
     as provenance, and the author will send you there himself ("read the last five DAGs") when he sees you
@@ -61,12 +83,13 @@ load-bearing claim rests on: [measurement] is recomputed by a command, [inferenc
 interpretation, [stated] is the author's position, [unverified] has not been checked for at least a session.
 Building something new on the unverified without checking it is not allowed.
 
-PHASE 4 — WHAT PROGRESS IS MEASURED FROM. Read `.claude/BASELINE.md` — the last version PINNED by the
-author: he checked it by hand and treats it as working. Everything laid down after the mark is draft,
+PHASE 4 — WHAT PROGRESS IS MEASURED FROM. Read the work's `.claude/BASELINE.md` — the last version PINNED
+by the author: he checked it by hand and treats it as working. Everything laid down after the mark is draft,
 including the work of past sessions and their upbeat reports. Any "progress" is counted from the mark, not
 from the start of your session and not from what you found in the repository. Cleaning up the noise agents
 introduced after the mark is not an achievement: it returns to zero. The goals remain the planned top-level
-ones, not the tasks that surfaced along the way. No BASELINE file — ask the author what to treat as the last
+ones, not the tasks that surfaced along the way. No BASELINE file, and you have not already asked about it
+while creating the frame — ask the author what to treat as the last
 verified version, and create it (skill pin).
 
 PHASE 5 — PLAN. Take the forward vector from the handoff and propose the steps of your block with
@@ -76,8 +99,10 @@ PHASE 6 — GATE. Present compactly: (1) the restored state — verified facts, 
 (2) the divergences from reality and the neighbors' delta, (3) what remains unverified, (4) which mark the
 count runs from and what has been draft since, (5) the plan of steps with justifications. STOP — the author
 checks that the state was reproduced correctly and that there is no bias. After that you work on your own
-along the approved plan. If $ARGUMENTS says "just execute", the gate is replaced by a short status and the
-work begins.
+along the approved plan. Only an explicit "just execute" in $ARGUMENTS replaces the gate with a short
+status. A short first message from the author — a one-word go-ahead in any language — is the opposite:
+he is being told by his console that writing anything at all starts the intake, and what he is waiting for
+is exactly this gate.
 
 AFTER THE GATE: start this session's journal (skill mark) and write the forks into it at the moment they
 happen, especially the discarded options. The closing ritual assembles the journal, not recollections.

@@ -1,23 +1,15 @@
 # -*- coding: utf-8 -*-
 """How the swarm state is drawn. A shared layer for the CLI (`bin/ctx.py`), for the panel in
-the status line and for the `/pulse` subcommands."""
+the status line and for the `ctx.py` subcommands."""
 import glob, json, os, sys, time
 
-sys.path.insert(0, os.path.join(os.path.expanduser("~"), ".claude", "kit"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import ctxlib  # noqa: E402
 
 R, DIM, RED, YEL, GRN, CYA = "\033[0m", "\033[2m", "\033[31m", "\033[33m", "\033[32m", "\033[36m"
 KIND = {"nudge": "nudge", "soft": "soft threshold", "block": "stop", "done": "closed"}
-LIMIT_WINDOW = {"five_hour": 5 * 3600, "seven_day": 7 * 86400}
 
 
-def bar(pct, w=16, pace=None):
-    n = max(0, min(w, int(round(pct * w / 100.0))))
-    cells = ["█"] * n + ["░"] * (w - n)
-    if pace is not None:
-        i = max(0, min(w - 1, int(pace * w / 100.0)))
-        cells[i] = "▏" if cells[i] == "░" else "▊"
-    return "".join(cells)
 
 
 def age(ts):
@@ -25,17 +17,17 @@ def age(ts):
     return "%ds" % s if s < 60 else ("%dm" % (s // 60) if s < 3600 else "%dh" % (s // 3600))
 
 
-def eta(sec):
-    if sec <= 0:
-        return "0m"
-    d, h, m = int(sec // 86400), int(sec % 86400 // 3600), int(sec % 3600 // 60)
-    return "%dd%dh" % (d, h) if d else ("%dh%02dm" % (h, m) if h else "%dm" % m)
 
 
 def rows():
     c = ctxlib.cfg()
     out = []
-    for p in glob.glob(os.path.join(ctxlib.CTX_DIR, "*.json")):
+    # `.state.json` — a file left by a session whose id was empty — is not matched by `*.json`:
+    # glob does not match a leading dot, and such a file used to stay there forever
+    for p in (glob.glob(os.path.join(ctxlib.CTX_DIR, "*.json"))
+              + glob.glob(os.path.join(ctxlib.CTX_DIR, ".*.json"))
+              + glob.glob(os.path.join(ctxlib.CTX_DIR, "err-*"))
+              + glob.glob(os.path.join(ctxlib.CTX_DIR, "*.tmp-*"))):
         try:
             d = json.load(open(p, encoding="utf-8"))
         except Exception:
@@ -70,16 +62,16 @@ def limits():
         pace, tail = None, ""
         if resets:
             left = resets - time.time()
-            full = LIMIT_WINDOW.get(key, 0)
+            full = ctxlib.LIMIT_WINDOW.get(key, 0)
             if full:
                 pace = max(0.0, min(100.0, (full - left) * 100.0 / full))
-            tail = DIM + "·" + eta(left) + R
+            tail = DIM + "·" + ctxlib.eta(left) + R
         if pace is None:
             col = RED if pct >= 90 else (YEL if pct >= 70 else GRN)
         else:
             over = pct - pace
             col = RED if over >= 20 else (YEL if over >= 5 else CYA)
-        parts.append("%s%s %s%s %d%%%s%s" % (DIM, name, col, bar(pct, 10, pace), round(pct), R, tail))
+        parts.append("%s%s %s%s %d%%%s%s" % (DIM, name, col, ctxlib.bar(pct, 10, pace), round(pct), R, tail))
     if not parts:
         return ""
     return "  ".join(parts) + DIM + "   (taken %s ago)" % age(seen) + R
@@ -95,21 +87,25 @@ def table():
         stale = (time.time() - (d.get("ts") or 0)) > c["stale_sec"]
         col = RED if pct >= c["hard_pct"] else (YEL if pct >= c["soft_pct"] else GRN)
         state = d.get("state", "live")
-        tag = {"closed": GRN + "closed" + R, "closing": YEL + "closing" + R}.get(state, "")
+        tag = GRN + "closed" + R if state == "closed" else ""
         if d.get("compacted"):
             tag = RED + "COMPACTED" + R
         if stale and state != "closed":
             tag = tag or DIM + "asleep" + R
         lines.append("%-22s %s%s %3d%%%s %s%-9s%s %s %s" % (
             os.path.basename((d.get("cwd") or "?").rstrip("/\\"))[:22],
-            col, bar(pct), round(pct), R,
+            col, ctxlib.bar(pct, 16), round(pct), R,
             DIM, ctxlib.fmt(d.get("used", 0), d["size"]), R,
             DIM + age(d.get("ts")) + R, tag))
-        for t in (d.get("swarm") or []):
+        sw = ctxlib.swarm_load(d.get("sid") or "")
+        # the snapshot ages on its own: without this a finished swarm was drawn as running, and a
+        # fallback to the metrics file made an empty swarm impossible to express at all
+        fresh_sw = sw.get("swarm_ts") and (time.time() - sw["swarm_ts"]) < ctxlib.cfg()["hide_sec"]
+        for t in ((sw.get("swarm") or []) if fresh_sw else []):
             sp = t.get("pct") or 0
             sc = RED if sp >= c["hard_pct"] else (YEL if sp >= c["soft_pct"] else GRN)
             lines.append("   %s└ %-17s%s %s%s %3d%%%s %s" % (
-                DIM, t.get("name", "")[:17], R, sc, bar(sp, 10), round(sp), R,
+                DIM, t.get("name", "")[:17], R, sc, ctxlib.bar(sp, 10), round(sp), R,
                 DIM + (t.get("status") or "") + R))
     lim = limits()
     if lim:
@@ -128,7 +124,9 @@ def log(n=40):
             time.strftime("%d.%m %H:%M", time.localtime(e.get("ts", 0))),
             col, KIND.get(e.get("kind"), e.get("kind")), R, round(e.get("pct", 0)),
             os.path.basename((e.get("cwd") or "").rstrip("/\\"))[:18],
-            DIM + (e.get("sid") or "")[:8] + R))
+            # the stream is shown: two closings in one directory look identical without it, and
+            # that is exactly what kit-review has to be able to tell apart in the trail
+            DIM + (e.get("sid") or "")[:8] + (" " + e["stream"] if e.get("stream") else "") + R))
     return "\n".join(lines)
 
 
@@ -138,6 +136,7 @@ def stats():
     ev = ctxlib.events(5000)
     if not ev:
         return "no events"
+    broke = [e for e in ev if e.get("kind") == "hook_error"]
     by_sid, cnt = {}, {}
     for e in ev:
         k = e.get("kind")
@@ -170,12 +169,27 @@ def stats():
                 n += 1
         if n:
             out.append("entries in FEEDBACK.md: %d (go through them with kit-review)" % n)
+    cut = time.time() - 86400
+    dn = [e for e in ev if e.get("kind") == "done" and e.get("ts", 0) >= cut]
+    if dn:
+        att = sum(1 for e in dn if e.get("console"))
+        out.append("closings attributed to a terminal: %d of %d%s" % (
+            att, len(dn), "" if att == len(dn) else
+            " — the rest fall back to asking which work is continued"))
+    if broke:
+        # a hook that raises is silent; the shield keeps the session alive but the failure has to
+        # surface SOMEWHERE, and this is the place built for exactly that
+        out.append(RED + "hooks that failed: %d (%s)" % (
+            len(broke), ", ".join(sorted({e.get("hook", "?") for e in broke}))) + R)
     return "\n".join(out)
 
 
 def clean():
     n = 0
-    for p in glob.glob(os.path.join(ctxlib.CTX_DIR, "*.json")):
+    # the dotted variant too: a session whose id was empty left `.state.json`, and `*.json` never
+    # matched it — the file would have sat there forever
+    for p in (glob.glob(os.path.join(ctxlib.CTX_DIR, "*.json"))
+              + glob.glob(os.path.join(ctxlib.CTX_DIR, ".*.json"))):
         if time.time() - os.path.getmtime(p) > 86400:
             os.remove(p)
             n += 1

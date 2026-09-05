@@ -9,9 +9,15 @@ self-sufficient, causality and intent carried over, and a clean agent continuing
 goals and without bias. Focus: $ARGUMENTS.
 
 Closing costs 1–5% of the context window: it is an assembly of what is already known, not research. It
-becomes expensive only if the session journal was not kept and you have to recall things. Take the project
-frame from `.claude/ritual.md` (levels, journal, session archive, streams, baseline checks, commit and push
-policy). No file — create it yourself from `~/.claude/kit/templates/ritual.md`, filling in everything that
+becomes expensive only if the session journal was not kept and you have to recall things. Take the frame
+from the `.claude/ritual.md` OF THE WORK. WHICH WORK: the one this session's intake named — the handoff
+path `open` was given. No intake ran this session — ask the author in one line which work is closing, and
+only with no answer does the current directory become the subject. Every path below (journal, archive,
+baseline), the push policy and every git command come from that frame.
+
+A session that has no work at all — a one-off in a directory that has no ritual — writes NO frame and no
+handoff: close it with `ctx.py done <session id> <stream> -` and stop there. No file — create it yourself from
+`~/.claude/kit/templates/ritual.md`, filling in everything that
 can be established by reading the repository, and ask the author only about what cannot be derived from
 there (pushing, the project's main document, the streams, the last verified version).
 
@@ -22,7 +28,9 @@ and context window.
   IMMEDIATELY, asking nothing. Something superfluous that got written is cheap; what is not written is
   recoverable by nothing.
 - COMMITS, amends and squashes — also without asking: history is kept logical rather than breeding dozens
-  of entries.
+  of entries. EVERY git command runs in the repository OF THE WORK. Committing into the neighboring one
+  the console happens to stand in is worse than reading its frame by mistake — a wrong read is undone by
+  reading again, a wrong commit is in someone else's history.
 - PUSHING — only if the project policy in `.claude/ritual.md` allows it. Forbidden by default:
   incremental noise must not travel into the repository past the versions the author expects.
 
@@ -39,7 +47,8 @@ public level — a follow-up · (C) only in the dialogue — catch it NOW.
 
 PHASE 0 — orientation: the project's actual layout across the three levels (which files go where).
 
-PHASE 0.5 — THE JOURNAL FIRST. Read THIS session's journal (`.claude/journal/`, skill mark). The entries
+PHASE 0.5 — THE JOURNAL FIRST. Read THIS session's journal (where the work's frame puts it; by default
+`.claude/journal/`, skill mark). The entries
 were made as things happened; your present recollections are after the fact. On a divergence the journal is
 right, and your version is a hypothesis to be checked in the files. The journal is raw material, not a
 finished handoff: it removes the dependence on memory, but all the work below you do again and in full. An
@@ -71,13 +80,25 @@ PHASE 3 — THE CAUSAL DAG (what carries "me" over into the new agent):
 - lossy on node content, lossless on topology: collapse a heavy derivation down to its arguments and
   references; an edge and an intent — NEVER. Phrase it AS IT WAS DECIDED in the dialogue, do not
   reinterpret.
-This session's DAG, journal and handoff go into its archive directory (`.claude/sessions/<date>-<stream>/`)
-and into the index under the stream's name: intake at opening goes by stream, not by the freshness of a
-file. Past ones are not rewritten — they are the provenance the author sends the agent back to when it
+This session's DAG, journal and handoff go into the archive OF THE WORK, at the place and under the
+naming its frame specifies (by default `.claude/sessions/<date>-<stream>/` plus an entry in the index
+under the stream's name; a repository with one stream may say it keeps no index, and then none is
+created). Two closings on one day must not collide by name.
+
+THE DATE OF THE ARCHIVE IS THE DATE OF THIS SESSION'S JOURNAL — the day the session BEGAN, and read off
+the machine (`date +%F`, or `Get-Date -Format yyyy-MM-dd` in PowerShell), never off your own sense of it.
+A session that started yesterday and ran through the night keeps yesterday: the archive and the journal
+are the same session and carry the same date. The closing is the point where the estimate has drifted
+furthest, and a forward-dated archive breaks the order of the provenance and collides with the closing of
+the day it stole. `ctx.py done` refuses when the HANDOFF PATH — its file name or the directory holding it
+— carries a date that has not come yet or a date that does not exist. That is all it checks: the names of
+the DAG, of the journal and of the index are yours, and an undated path is not checked at all.
+
+EARLIER ARCHIVES ARE NOT REWRITTEN. They are the provenance the author sends an agent back to when it
 starts repeating the same mistakes.
 
 PHASE 4 — WHAT PROGRESS IS MEASURED FROM (do not skip it, this is the main source of drift).
-The basis is the last version PINNED by the author (`.claude/BASELINE.md`, skill pin), NOT the state at the
+The basis is the last version PINNED by the author (`.claude/BASELINE.md` OF THE WORK, skill pin), NOT the state at the
 start of this session and not the result of the previous one. Everything laid down after the mark is draft,
 including the work of past sessions. Separate them explicitly and do not mix:
 - PROGRESS on the planned top-level goals — relative to the mark;
@@ -95,7 +116,10 @@ boundary (do not touch) / something parked with a reason / item B (finish it pro
 finish it, do not attack.
 
 PHASE 6 — THE FORWARD VECTOR: the open frontier and the next real task; what is parked WITH A REASON; the
-gates and conditions; the goals that must not sag. The top-level goals remain the planned ones, not the
+gates and conditions; the goals that must not sag. NAME SEPARATELY EVERY OBLIGATION LEFT WAITING ON THE
+AUTHOR'S ANSWER — a pin he has not confirmed, an edit he has not looked at, a step that stands behind a
+gate. It is nobody's until it is written down: this kit itself carried an unset mark and an uninstalled
+edit across sessions for exactly that reason. The top-level goals remain the planned ones, not the
 ones that surfaced along the way.
 
 PHASE 7 — VERIFICATION AGAINST THE FILES: check what you are writing out against what is REALLY in the
@@ -111,8 +135,12 @@ DO NOT TOUCH: rejected branches and the reasons for the rejections (that knowled
 past sessions' journals and DAGs (provenance), the named boundaries. Git will not bring untracked files
 back — name such deletions out loud.
 
-PHASE 9 — COMMIT: reduce the session to ONE logical entry — one version per batch (an amend, or
-`git reset --soft <last pushed sha>` and a single commit on top). Public style of message, about the
+PHASE 9 — COMMIT: reduce the session to ONE logical entry — an amend of your own commit, or
+`git reset --soft <base>` and a single commit on top. THE BASE IS WHICHEVER OF THESE EXISTS AND IS
+NEAREST: the last pushed commit, or the commit the last mark in `.claude/BASELINE.md` points at. Neither
+exists — do not reset at all, just commit on top. A squash reaching past a mark destroys the tag and the
+diff every later count is measured from, and a squash reaching past a push rewrites what others already
+have. Public style of message, about the
 result, without process, Co-Authored-By. With a live neighbor in the repository: only explicit paths,
 `commit --only`, `log` and `status` immediately before committing, no history rewriting while the neighbor
 has not been stopped. Pushing — only if the project policy allows it.
@@ -123,19 +151,30 @@ the way, led you past the point or did not cover the case — append an entry to
 about defects in the ritual: the watchdog fires without him. Do not write proposals of "how it should be";
 the kit-review skill derives those from recurrence.
 
-GATE — present it and STOP: (1) the map of the layout across the levels and the verdict of the equivalence
+SILENCE THE WATCHDOG — BEFORE the gate, in the same turn as the last commit, not after:
+`python "$HOME/.claude/kit/bin/ctx.py" done <session id> <stream> <path to the handoff you just wrote>`
+(the id was given at session start). All three values are required and the call refuses without them: they
+are what the next agent is opened with, and a bare name is resolved through the CURRENT directory's ritual,
+so a work living outside it would be unreachable. Wrote no handoff at all — say so with `-` rather than
+inventing a file.
+THE ORDER MATTERS AND IT IS NOT COSMETIC: the gate below says STOP, and a call left on the far side of a
+STOP does not happen. The session would then never be marked closed, the re-check would never come, and
+after the `/clear` the next agent would be told nothing.
+
+GATE — present it: (1) the map of the layout across the levels and the verdict of the equivalence
 test, (2) the DAG with intent and negative edges, (3) progress relative to the PINNED version, and
 separately the housekeeping curing of noise, (4) the holes from phase 7, (5) the Bayes corrections, (6) the
 forward vector. Everything is already written and committed — the author is not unblocking the work, he is
-checking that the state is reproducible.
+checking that the state is reproducible. Do not wait for him here: the closing is recorded, so the re-check
+below arrives on the same turn, and it is the last thing the session does.
 
-PUT OUT THE WATCHDOG once the handoff is written and presented:
-`python ~/.claude/kit/bin/ctx.py done <session id>` (the id was given at session start).
-Immediately after that ONE re-check pass will come — do not argue with it and do not skip it: on a filled
+ONE re-check pass will come right after the closing is recorded — do not argue with it and do not skip it: on a filled
 context window your own write-up systematically leaves things unwritten, and this is the only cheap way to
-catch them.
+catch them. WHAT THE RE-CHECK FIXES GOES INTO THE SAME COMMIT, by amend: fixes left in the working tree
+travel into the next session as somebody's unexplained noise.
 
-HAVING FINISHED the re-check, tell the author exactly one thing: the closing went through, press `/clear`.
+HAVING FINISHED the re-check, tell the author two things and nothing else: what the re-check corrected (or
+that it corrected nothing), and that the closing went through — press `/clear`.
 Nothing else is required of him — the intake will start with his very next message, and what he sees will
 already be the gate.
 Until the switch, make no new decisions: the handoff is written, and anything you decide beyond it on a

@@ -4,6 +4,16 @@ This file is read by the `open`, `close`, `mark`, `pin` skills. It describes the
 repository in particular — the skills themselves are project-neutral. Fill it in with facts, not with
 intentions: a wrong field here means a ritual performed past the mark.
 
+## The subject of the work
+
+<the repository or directory this frame is about — an ABSOLUTE path>
+
+Every path below is relative to it and not to the directory a console happens to stand in. The two
+come apart more often than it seems: a console is opened in a neighboring project, an agent does a
+`cd`, the work lives in a global directory. When they came apart silently once, a session's files
+landed in a repository the author had forbidden to touch, and the agent after it opened the wrong
+stream and never noticed.
+
 ## Levels of knowledge
 
 - PUBLIC (results, conclusions, boundaries; zero process):
@@ -23,7 +33,10 @@ The one that is read at the opening WITH YOUR OWN EYES before anything else:
 
 - The current session's journal: `.claude/journal/<YYYY-MM-DD>-<slug>.md`
 - The archive of closed sessions: `.claude/sessions/<date>-<stream>/` — handoff, DAG, journal
-- The index: `.claude/sessions/INDEX.md`, the newest entry on top, with the stream's name
+- The index: `.claude/sessions/INDEX.md`, the newest entry on top, with the stream's name. A
+  repository with a single stream may say plainly that it keeps no index — then none is created.
+- Names must not collide when the same day sees two closings: date plus a slug. Where the date comes
+  from is the skills' business, not this file's — fill in the naming here, not the rule behind it.
 - By default a new agent reads ONLY the last entry. Deeper — on the author's instruction ("read the
   last five DAGs"), when the agent starts stepping on the same rake over and over.
 - The archive is not retired: it is provenance, not a draft.
@@ -32,7 +45,9 @@ The one that is read at the opening WITH YOUR OWN EYES before anything else:
 
 Logically independent directions of work. Each has its own handoff and its own archive; the author
 maintains the separation, the agent's job is not to confuse its own stream with someone else's. The
-stream's name is passed in `/open <stream>`.
+stream reaches the next agent as the argument of `open`, in the form `<stream> — handoff: <absolute
+path>`: a name alone would have to be resolved through the current directory, and that is precisely
+what must not decide.
 
 - <name> — <its files, branch or worktree, what it works on>
 
