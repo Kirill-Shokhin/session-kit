@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+
+# Personal. Never goes to the repository.
+# Thresholds and mode of this machine
+config.json
+# Trail of watchdog firings: paths, projects, session identifiers
+events.jsonl
+# Friction notes naming real projects (the template lives in templates/)
+FEEDBACK.md
+# Session journals
+journal/
+# Filled-in frames of real projects
+examples/
+# Personal drafts and earlier versions of commands
+legacy/
+commands/client-doc.md
+# Personal layer: own glossary and own skills, laid over the public ones
+skills-local/
