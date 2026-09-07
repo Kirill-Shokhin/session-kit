@@ -79,13 +79,20 @@ After the confirmation:
   sense of it; what exactly the author verified; the content of the version in one line; the top-level
   goals for the next interval;
 - put an ANNOTATED tag on this commit — `git tag -a <mark> -m "<what this version is>"`. A plain
-  `git tag` makes a lightweight one, and `git push --follow-tags` does not carry those: the mark
-  would stay on this machine and `git rev-parse <mark>` would fail for everyone else, while the
-  whole count of advancement rests on it resolving;
+  `git tag` makes a lightweight one, which several commands quietly skip; the mark has to resolve
+  under `git rev-parse` for every session that measures its advancement from it;
 - do not delete the previous BASELINE, shift it into the file's history: the sequence of marks is the line
   of real versions, and it shows where the project has been going;
 - tell the author in one line that the mark is set and that the count for the following sessions runs from
   it.
 
-Pushing — by the policy in the work's `.claude/ritual.md`, read from that repository and not from
-whichever one the console happens to be in. The tag, the diff and the commit go into that repository too.
+**A pin is LOCAL, and it is not a publication.** It says what the author checked by hand and where
+the count of advancement starts — a fact about this working copy. A public release tag may well
+land on the same commit, but it is a different act with a different audience, and it belongs to the
+author. So pinning ends here: the mark is written and the tag is made, and nothing is pushed by the
+pinning itself.
+
+Pushing at all — by the policy in the work's `.claude/ritual.md`, read from that repository and not
+from whichever one the console happens to be in. **Where the frame is silent or absent, the policy
+is FORBIDDEN**: an agent that guesses wrong in this direction publishes; guessing wrong in the other
+direction costs one question.
