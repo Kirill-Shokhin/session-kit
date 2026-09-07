@@ -84,6 +84,18 @@ def main(d):
     ctxlib.utf8_io()
     if d.get("agent_id"):          # a subagent ends on its own, the ritual is not its business
         return 0
+    # NOR IS A SESSION THAT IS NOT A PERSON'S CONSOLE. A tool that shells out to `claude -p` — a
+    # test harness, a CI step, an agent framework driving the CLI — inherits these hooks, and the
+    # payload of its Stop is indistinguishable from an interactive one (measured: same fields, same
+    # `permission_mode`, no marker). The watchdog then fires at the child's first delivery: there is
+    # nobody to count the check in, so the block buys an extra generation round on somebody's paid
+    # call and replaces the answer with instructions meant for a human. Measured live in one such
+    # child: a three-word reply came back as a paragraph proposing the intake skill.
+    # The entrypoint is what tells them apart — `cli` in a console, `sdk-*` when the CLI is being
+    # driven. Unknown values are treated as a console, so a new interactive front end keeps its
+    # watchdog rather than silently losing it.
+    if os.environ.get("CLAUDE_CODE_ENTRYPOINT", "cli").startswith("sdk"):
+        return 0
     sid = d.get("session_id")
     if not sid:
         return 0
