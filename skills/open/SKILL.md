@@ -92,8 +92,12 @@ ones, not the tasks that surfaced along the way. No BASELINE file, and you have 
 while creating the frame — ask the author what to treat as the last
 verified version, and create it (skill pin).
 
-PHASE 5 — PLAN. Take the forward vector from the handoff and propose the steps of your block with
-justifications. Do not attack what is marked as parked with a reason, or the named boundaries.
+PHASE 5 — PLAN. First the idea, then the vector. Say what the work is for — the author's idea and why it
+must hold, in your own derivation from Phase 0, not a quote — and how the forward vector serves it. A
+vector is the previous agent's reading from inside its own frame; the handoff can be accurate in every
+fact and still point somewhere that no longer serves the idea. If it does not serve it, say so at the gate
+with the reason, and put the step that does. Then propose the steps with justifications. Do not attack
+what is marked as parked with a reason, or the named boundaries.
 
 PHASE 6 — GATE. Present compactly: (1) the restored state — verified facts, not a retelling of the handoff,
 (2) the divergences from reality and the neighbors' delta, (3) what remains unverified, (4) which mark the

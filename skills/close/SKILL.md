@@ -115,7 +115,9 @@ not-done" is NOT to be read as "the author left it unfinished, it must be attack
 boundary (do not touch) / something parked with a reason / item B (finish it properly). When in doubt —
 finish it, do not attack.
 
-PHASE 6 — THE FORWARD VECTOR: the open frontier and the next real task; what is parked WITH A REASON; the
+PHASE 6 — THE FORWARD VECTOR: first the idea the work serves and why it must hold, as you derived it (not a
+quote), and how the next step serves it — a vector without its why is the next agent's narrow window; then
+the open frontier and the next real task; what is parked WITH A REASON; the
 gates and conditions; the goals that must not sag. NAME SEPARATELY EVERY OBLIGATION LEFT WAITING ON THE
 AUTHOR'S ANSWER — a pin he has not confirmed, an edit he has not looked at, a step that stands behind a
 gate. It is nobody's until it is written down: this kit itself carried an unset mark and an uninstalled
