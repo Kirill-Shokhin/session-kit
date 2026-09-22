@@ -165,6 +165,8 @@ def stats():
         for line in open(fb, encoding="utf-8"):    # a format sample, not an entry
             if line.startswith("```"):
                 code = not code
+            elif line.startswith("## Processed") and not code:
+                break                                  # what kit-review has already gone through
             elif line.startswith("## ") and not code and not line.startswith("## <"):
                 n += 1
         if n:
