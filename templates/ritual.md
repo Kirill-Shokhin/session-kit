@@ -49,7 +49,8 @@ stream reaches the next agent as the argument of `open`, in the form `<stream> �
 path>`: a name alone would have to be resolved through the current directory, and that is precisely
 what must not decide.
 
-- <name> — <its files, branch or worktree, what it works on>
+- <name> — <its files, branch or worktree, what it works on> — entry point: <the handoff, or for a
+  stream that has none yet, its charter or state file>
 
 The freshest file or commit does NOT mean "mine": streams run asynchronously and may live in
 different worktrees. A project with a single orchestrator is a special case: there is one stream, and
@@ -76,6 +77,7 @@ What reality is checked with at the opening (the commands that must work):
 - Message style: <public, about the result, without process>
 - **Push: <FORBIDDEN without the author's permission | ALLOWED, agents keep the repository themselves>**
   Forbidden by default: incremental noise must not travel out past the versions the author expects.
+- **Pin tags: <local only | pushed together with the branch>**
 
 ## The gate
 

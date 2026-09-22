@@ -23,7 +23,7 @@ def rows():
     c = ctxlib.cfg()
     out = []
     # `.state.json` — a file left by a session whose id was empty — is not matched by `*.json`:
-    # glob does not match a leading dot, and such a file used to stay there forever
+    # glob does not match a leading dot, and such a file would stay there forever
     for p in (glob.glob(os.path.join(ctxlib.CTX_DIR, "*.json"))
               + glob.glob(os.path.join(ctxlib.CTX_DIR, ".*.json"))
               + glob.glob(os.path.join(ctxlib.CTX_DIR, "err-*"))
@@ -35,8 +35,8 @@ def rows():
         # Liveness is judged by the freshness of the reading. The status line ticks every
         # refreshInterval seconds, so a live session updates the file even while idle and a
         # closed one stops. Judging by the process is impossible: the status line is started by
-        # an intermediate shell, and its id is dead by the time of the write — that is how every
-        # session used to look dead.
+        # an intermediate shell, and its id is dead by the time of the write — by it every session
+        # would look dead.
         if d.get("size") and (time.time() - (d.get("ts") or 0)) < c["hide_sec"]:
             st = ctxlib.state_load(d.get("sid") or "")   # flags live in their own file
             st.pop("cwd", None)          # the project root comes from the metrics, not from a hook

@@ -137,8 +137,8 @@ def main(d):
             # distance by which to tell new work from old, so the gate demands consensus once and
             # then trusts the counted check for the rest of the session. The alternative — never
             # settling — would demand the critics on every single delivery with no way out. The
-            # trade is deliberate; recording a numeric position here (it used to write zero) was
-            # not: it left both re-arming branches unreachable and `verified` unread.
+            # trade is deliberate; a numeric position here (a zero, say) would not be:
+            # it leaves both re-arming branches unreachable and `verified` unread.
             fire = not st.get("verified") and not st.get("gate_blind")
             settled = False
         else:
@@ -159,18 +159,19 @@ def main(d):
                 "The author looks at a result that passed a check, not at the moment when it seemed",
                 "to you that the work had ended.",
                 "",
-                "You ALREADY ran the check and it converged — just count it in and deliver, do not",
+                "You ALREADY ran the check and it passed — just count it in and deliver, do not",
                 "run it again:",
                 "    python \"%s\" verified %s" % (CTX_CMD, sid),
                 "",
                 "You did not run it — then before delivering:",
-                "1. A fresh critic with no context, unaware of the edits, over all you deliver —",
-                "   does the statement answer the goal, does the result hold; not a re-read of a diff.",
-                "   Give it the goal in the author's own words or document, not your retelling.",
-                "   A plan, an analysis or a derivation the author will act on is a result too.",
-                "   A finding you dispute goes to the author in the report beside your reason; then deliver.",
-                "2. A fix — and a fresh critic again, until the iteration's changes hold no",
-                "   significant defects.",
+                "1. Agent(subagent_type=\"kit-critic\") with the goal in the author's own words or",
+                "   document, the path to what you deliver and the angle that matters — not your",
+                "   hypotheses, not a checklist, not a retelling. A plan, an analysis or a derivation",
+                "   the author will act on is a result too. A finding is a suspicion: check it against",
+                "   the source before fixing it; one you dispute goes to the author beside your reason.",
+                "2. A fix that changes the substance — and a fresh kit-critic over the whole again. Done",
+                "   when it finds nothing that changes what the author acts on; a wording fix needs",
+                "   no new round.",
                 "3. Count the check in with the command above and deliver in a single message, on",
                 "   the substance of the result.",
                 "Do not ask permission to run the critics: it is an ordinary part of the work.",
@@ -189,7 +190,7 @@ def main(d):
     except Exception:
         pass
 
-    # the ritual is done — one recheck pass is left, the author used to ask for it by hand
+    # the ritual is done — one recheck pass is left
     if st.get("state") == "closed":
         if not st.get("recheck_asked"):
             ctxlib.state_save(sid, {"recheck_asked": True})
@@ -245,7 +246,9 @@ def main(d):
         ctxlib.state_save(sid, {"soft_warned": True, "nudged_at": pct})
         ctxlib.event("soft", sid, pct, d.get("cwd", ""))
         out("The window is %d%% full (%s). The closing threshold is %d%%. Start no new large "
-            "branches. If there was a fork since the last journal entry — a discarded option, a "
+            "branches — finishing what is already found, delivering what is built and a background "
+            "run already going are not new branches. Work left that will not fit — tell the author "
+            "in one line what it is, so the window is not read as a lack of work. If there was a fork since the last journal entry — a discarded option, a "
             "change of direction, a measurement, a divergence from expectation, a course "
             "correction from the author — write it down now (the mark skill). There were no "
             "forks — nothing needs to be written."

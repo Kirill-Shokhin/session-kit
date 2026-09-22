@@ -119,7 +119,7 @@ def save(sid, patch):
 
 
 def swarm_path(sid):
-    """The subagent line's own file. IT USED TO WRITE INTO THE SESSION'S METRICS FILE, which the
+    """The subagent line's own file, SEPARATE FROM THE SESSION'S METRICS FILE, which the
     status line rewrites every few seconds under the SAME id: two processes over one file, and on
     Windows `os.replace` fails while the other still holds it. Retrying only narrows the window —
     the defect is the sharing. Each writer owns its file; the reader merges them."""
@@ -309,8 +309,8 @@ def same_console(rec, me):
     """Does a recorded closing belong to the terminal `me`.
 
     THE STRONG NAME OVERRULES THE WEAK ONE. The socket is one per process and never reused; the pid
-    always exists but the system hands it out again. Agreement on either used to be enough, which
-    made the whole thing exactly as trustworthy as its weakest name: a recycled pid matched a
+    always exists but the system hands it out again. Agreement on either alone would make
+    the whole thing exactly as trustworthy as its weakest name: a recycled pid matched a
     stranger's closing and handed it over without a question. So when BOTH sides name a socket and
     the sockets differ, these are different terminals whatever the pid says. The pid decides only
     where a socket is missing on one of the sides.
@@ -332,8 +332,8 @@ def marked(rec):
 def under(closed_cwd, cwd):
     """Was the closed work sitting in THIS console's tree — at its root or deeper.
 
-    ONE-DIRECTIONAL ON PURPOSE. It used to accept the ancestor direction too, and that gave the
-    directory back the deciding vote it had just been stripped of: a work closed in the home
+    ONE-DIRECTIONAL ON PURPOSE. Accepting the ancestor direction too gives the directory back the
+    deciding vote: a work closed in the home
     directory matched every project underneath it, and any session started there within the half
     hour was told, with no clarifying questions, to open it. The other direction — the console
     reopened deeper than the work closed — loses an invitation at worst, and a missing invitation
@@ -348,7 +348,7 @@ def under(closed_cwd, cwd):
 
 def _work_key(e):
     """What makes two closings the same work. Empty fields are NOT a match: two closings that
-    both named nothing used to collapse into one, the ambiguity branch never fired, and the agent
+    both named nothing would collapse into one, the ambiguity branch never fired, and the agent
     was sent to find a handoff by directory — the very incident this is here to prevent."""
     s, h = (e.get("stream") or "").strip(), (e.get("handoff") or "").strip()
     if not s and not h:
@@ -466,7 +466,8 @@ def intake_body(pend):
     if pend.get("choices"):
         many = len(pend["choices"]) > 1
         return ("%s: %s. Which work is being continued does not follow from the directory — ask "
-                "the author in one line BEFORE the intake and open the one he names. Do not "
+                "the author in one line BEFORE the intake and open the one he names; if his message "
+                "already names one of them, in any words, that is the answer — open it and say so. Do not "
                 "decide it by freshness or by proximity: deciding it once handed an agent someone "
                 "else's work, and every link of the ritual reported success. Ask first; the gate "
                 "comes after."
@@ -530,9 +531,8 @@ def bar(pct, width=14, pace=None, cursor="│"):
     the cursor is drawn on top of the bar in its own character so that it blends neither into the
     spend nor into the background — pass the escape codes around it as `cursor`.
 
-    ONE IMPLEMENTATION. There were three, with different widths, different cursor characters and
-    different signatures, in a kit that ships "two units incomplete without each other — merge
-    them" as a rule it installs into every agent's instructions.
+    ONE IMPLEMENTATION for every bar in the kit: separate copies drift apart in width, cursor and
+    signature, in a kit that ships "two units incomplete without each other — merge them" as a rule.
     """
     n = max(0, min(width, int(round(pct * width / 100.0))))
     cells = ["█"] * n + ["░"] * (width - n)

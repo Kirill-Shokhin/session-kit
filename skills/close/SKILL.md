@@ -80,10 +80,11 @@ PHASE 3 — THE CAUSAL DAG (what carries "me" over into the new agent):
 - lossy on node content, lossless on topology: collapse a heavy derivation down to its arguments and
   references; an edge and an intent — NEVER. Phrase it AS IT WAS DECIDED in the dialogue, do not
   reinterpret.
-This session's DAG, journal and handoff go into the archive OF THE WORK, at the place and under the
-naming its frame specifies (by default `.claude/sessions/<date>-<stream>/` plus an entry in the index
+This session's DAG, journal and handoff go into the archive OF THE WORK — the journal MOVES there, no
+working copy stays behind — at the place and under the naming its frame specifies (by default `.claude/sessions/<date>-<stream>/` plus an entry in the index
 under the stream's name; a repository with one stream may say it keeps no index, and then none is
-created). Two closings on one day must not collide by name.
+created). Two closings on one day must not collide by name: check the directory ON DISK, not from
+memory, and a second closing of the same stream on one day takes a suffix.
 
 THE DATE OF THE ARCHIVE IS THE DATE OF THIS SESSION'S JOURNAL — the day the session BEGAN, and read off
 the machine (`date +%F`, or `Get-Date -Format yyyy-MM-dd` in PowerShell), never off your own sense of it.
@@ -129,6 +130,10 @@ files — open the persisted state, do not trust your own claim. Check that ever
 resolves (the file exists, the line is the right one, the command reproduces). Simulate it: will an agent
 with no context reconstruct the path, the goals and the intent from what has been written out alone? Holes
 and contradictions — as a list, without papering over.
+YOUR BACKGROUND TASKS — list them: your own tasks, not the system's processes. Each is either stopped,
+or left running on purpose with its acceptance made mechanical — the output path and the command that
+checks it go into the handoff. A critic still running is waited for: a verdict arriving after the
+gate rewrites it.
 
 PHASE 8 — CLEANUP (without asking, together with writing the new material): clear out what genuinely will
 not be of use again — superseded drafts, stale pieces of memory, duplicates; update the indexes, do not
@@ -137,12 +142,13 @@ DO NOT TOUCH: rejected branches and the reasons for the rejections (that knowled
 past sessions' journals and DAGs (provenance), the named boundaries. Git will not bring untracked files
 back — name such deletions out loud.
 
-PHASE 9 — COMMIT: reduce the session to ONE logical entry — an amend of your own commit, or
-`git reset --soft <base>` and a single commit on top. THE BASE IS WHICHEVER OF THESE EXISTS AND IS
-NEAREST: the last pushed commit, or the commit the last mark in `.claude/BASELINE.md` points at. Neither
-exists — do not reset at all, just commit on top. A squash reaching past a mark destroys the tag and the
-diff every later count is measured from, and a squash reaching past a push rewrites what others already
-have. Public style of message, about the
+PHASE 9 — COMMIT: reduce YOUR OWN commits of this session to ONE logical entry — an amend, or
+`git reset --soft <base>` and a single commit on top. THE BASE IS THE NEAREST OF: the last commit not made by this
+session, the last pushed commit, the commit the last mark in `.claude/BASELINE.md` points at, and
+any commit an artifact of the repository names (a provenance field, a snapshot, a floor). Earlier
+sessions' and neighbors' commits are not yours to fold: a reset past a mark destroys the tag and the
+diff every later count is measured from, past a push it rewrites what others already have, past a
+named commit it orphans the reference. The base is HEAD — nothing to fold, commit on top. Public style of message, about the
 result, without process, Co-Authored-By. With a live neighbor in the repository: only explicit paths,
 `commit --only`, `log` and `status` immediately before committing, no history rewriting while the neighbor
 has not been stopped. Pushing — only if the project policy allows it.
@@ -180,7 +186,9 @@ that it corrected nothing), and that the closing went through — press `/clear`
 Nothing else is required of him — the intake will start with his very next message, and what he sees will
 already be the gate.
 Until the switch, make no new decisions: the handoff is written, and anything you decide beyond it on a
-filled context window will not get into it.
+filled context window will not get into it. If the author keeps working in this console instead of
+pressing `/clear`, that is a new session of the same work: a new journal with its own slug (skill mark),
+closed on its own.
 
 FLEXIBILITY: this is ordinary logic, not dogma; if the task does not fit — surface it and adapt, do not
 autopilot.

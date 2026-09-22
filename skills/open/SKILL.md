@@ -34,7 +34,7 @@ three levels, the project's main document, the journal and archive paths, the ba
 README or the build configs. A few things will remain that cannot be derived from the repository — ASK the
 author about those right here, as a short list, in one message:
 - which document is the main one here, if that is not obvious;
-- whether pushing is allowed in this repository;
+- whether pushing is allowed in this repository, and whether pin tags travel with the branch;
 - which streams exist, if there is more than one;
 - what counts as the last version he verified — write the answer into the work's `.claude/BASELINE.md`
   yourself, from `~/.claude/kit/templates/BASELINE.md`, marked [stated]: it is his word, not a check of
@@ -43,8 +43,9 @@ Write the answers into the files yourself. The author must not fill anything in 
 questions, you write the files. Until the answers arrive, work by defaults — pushing forbidden, one stream,
 counting from the current HEAD as a draft.
 
-PHASE 0 — THE SHIFT (do NOT skip it). Read the project's root domain document YOURSELF —
-in full, or its load-bearing parts by the table of contents, but with your own eyes, not through retellings
+PHASE 0 — THE SHIFT (do NOT skip it). Read the project's main document YOURSELF — every part
+the frame names as the canon, not the first of them (a canon of state and of subject is two
+documents, and reading one produced a gate that was half an intake) — in full, or its load-bearing parts by the table of contents, but with your own eyes, not through retellings
 from memory: without this the agent does not understand the domain and invents incorrectly. This is the
 shift from the base model to the project's mode of thinking, the precondition for speaking one language at
 one level. Plus the main document's key companions, by the sense of the task.
@@ -63,9 +64,13 @@ Take:
     was the wrong way. Do not go deeper into the archive without being told: old journals and DAGs lie there
     as provenance, and the author will send you there himself ("read the last five DAGs") when he sees you
     repeating the same mistakes;
-(b) the Bayes memory in full — ALWAYS (it is behavior, not project);
+(b) the Bayes memory in full coverage — ALWAYS (it is behavior, not project): every file, at least to
+    its first paragraph and its Why, verbatim where it touches the task. Coverage is the rule, not the
+    word count; a partial read is said at the gate;
 (c) the architectural landmarks and the code map of your own track.
-Other streams — by headings, do not go deeper, but know who is alive and where their files are, so as not
+A stream with no handoff yet — a new one, or one kept by an agent without the kit — opens from its
+ENTRY POINT in the frame's list of streams (a charter, a state file): that path stands in for the
+handoff, and the gate says so. Other streams — by headings, do not go deeper, but know who is alive and where their files are, so as not
 to disturb them.
 
 PHASE 2 — THE ADJACENT. The levels below: the internal plan or roadmap (where your block and its gates
@@ -99,16 +104,18 @@ fact and still point somewhere that no longer serves the idea. If it does not se
 with the reason, and put the step that does. Then propose the steps with justifications. Do not attack
 what is marked as parked with a reason, or the named boundaries.
 
-PHASE 6 — GATE. Present compactly: (1) the restored state — verified facts, not a retelling of the handoff,
+PHASE 6 — GATE. Present compactly: (1) the restored state — verified facts, not a retelling of the handoff, naming each part of the canon read,
 (2) the divergences from reality and the neighbors' delta, (3) what remains unverified, (4) which mark the
 count runs from and what has been draft since, (5) the plan of steps with justifications. STOP — the author
 checks that the state was reproduced correctly and that there is no bias. After that you work on your own
 along the approved plan. Only an explicit "just execute" in $ARGUMENTS replaces the gate with a short
 status. A short first message from the author — a one-word go-ahead in any language — is the opposite:
 he is being told by his console that writing anything at all starts the intake, and what he is waiting for
-is exactly this gate.
+is exactly this gate. The gate asks nothing the working mode would strike out, and it is the only
+stop: once the author has answered it, the mode decides what else goes to them.
 
-AFTER THE GATE: start this session's journal (skill mark) and write the forks into it at the moment they
+START THIS SESSION'S JOURNAL (skill mark) with the first fork after the intake — whether the author
+answered the gate or turned the session elsewhere — and write the forks into it at the moment they
 happen, especially the discarded options. The closing ritual assembles the journal, not recollections.
 
 RULES ON TOP (from the Bayes memory, apply from the first step): do not re-litigate the author's protected

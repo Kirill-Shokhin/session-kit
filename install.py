@@ -8,7 +8,8 @@
   python install.py --dry-run       show what will be done
   python install.py --soft 60 --hard 75   the context window watchdog thresholds
 
-What it does: puts the skills into ~/.claude/skills and the commands into ~/.claude/commands,
+What it does: puts the skills into ~/.claude/skills, the commands into ~/.claude/commands, the critic
+into ~/.claude/agents,
 merges the status line and five hooks into ~/.claude/settings.json, disables auto-compaction.
 Existing settings are preserved, the file is backed up before it is edited.
 """
@@ -20,6 +21,7 @@ CLAUDE = os.path.join(HOME, ".claude")
 KIT = os.path.join(CLAUDE, "kit")
 PY = sys.executable
 MARK = os.path.join("kit", "hooks")  # by this substring we recognize our own hooks on update
+RULES_B, RULES_E = "<!-- session-kit:rules:start -->", "<!-- session-kit:rules:end -->"
 
 
 def cmd(rel):
@@ -113,6 +115,19 @@ def installed_drift():
             t = re.sub(r"(?<![\w-])%s(?![\w-])" % re.escape(a_), lambda m: b_, t)
         if t.strip() != open(g, encoding="utf-8").read().strip():
             out.append(name + ": the installed copy is behind the repository")
+    # the critic is what makes the check whole-artifact by default; a stale copy undoes that silently
+    for name in sorted(os.listdir(os.path.join(root, "agents"))) if os.path.isdir(os.path.join(root, "agents")) else []:
+        g = os.path.join(CLAUDE, "agents", name)
+        if not os.path.isfile(g) or open(g, encoding="utf-8").read() != open(os.path.join(root, "agents", name), encoding="utf-8").read():
+            out.append("agents/%s: the installed copy is behind the repository" % name)
+    # The global rules travel into CLAUDE.md by the same installer and fall behind the same way:
+    # the rules of one publish never reached the agents, and a check reading skills alone was silent.
+    rules, md = os.path.join(root, "rules", "global.md"), os.path.join(CLAUDE, "CLAUDE.md")
+    if os.path.isfile(rules):
+        cur = open(md, encoding="utf-8").read() if os.path.isfile(md) else ""
+        i, j = cur.find(RULES_B), cur.find(RULES_E)
+        if not 0 <= i < j or open(rules, encoding="utf-8").read().strip() not in cur[i:j]:
+            out.append("global rules: the CLAUDE.md block is behind the repository")
     return out
 
 
@@ -165,8 +180,8 @@ def main():
             report(log, "The pull failed — sort the repository out and try again.")
             return 1
     if a.publish and a.dry_run:
-        # --dry-run used to be ignored here: the flag documented as "see what would be done"
-        # really committed and really pushed. Now it shows the list and stops.
+        # --dry-run shows the list and stops: the flag promises "see what would be done", and a
+        # publish that committed and pushed under it would break that promise irreversibly.
         r = subprocess.run(["git", "-C", src, "add", "-A", "--dry-run"],
                            capture_output=True, text=True)
         for line in (r.stdout or "").strip().splitlines():
@@ -219,7 +234,7 @@ def main():
         log.append("kit → %s" % KIT)
         if not a.dry_run:
             # The stash goes OUTSIDE KIT: the directory is removed whole, and anything put
-            # inside it is removed with it. That is exactly how the earlier version broke.
+            # inside it would be removed with it.
             stash_dir = tempfile.mkdtemp(prefix="kit-keep-")
             stashed = []
             try:
@@ -254,7 +269,7 @@ def main():
                     log.append("personal kept: " + ", ".join(sorted(n for n, _ in stashed)))
 
     # 2. skills and commands
-    for kind in ("skills", "commands", "skills-local"):
+    for kind in ("skills", "commands", "skills-local", "agents"):
         src = os.path.join(KIT if not a.dry_run else HERE, kind)
         if not os.path.isdir(src):
             continue
@@ -282,9 +297,9 @@ def main():
     if os.path.exists(gl) and not a.dry_run:
         pairs = json.load(open(gl, encoding="utf-8"))
         changed = 0
-        # ONLY THE KIT'S OWN SKILLS. It used to walk every skill in ~/.claude/skills and rewrite
-        # general phrases in place, without a backup: someone else's skill installed later would
-        # be silently edited by a glossary that has nothing to do with it.
+        # ONLY THE KIT'S OWN SKILLS. Walking every skill in ~/.claude/skills would rewrite general
+        # phrases in place, without a backup: someone else's skill would be silently edited by a
+        # glossary that has nothing to do with it.
         mine = {n for n in os.listdir(os.path.join(KIT, "skills"))} | {
             n for n in (os.listdir(os.path.join(KIT, "skills-local"))
                         if os.path.isdir(os.path.join(KIT, "skills-local")) else [])}
@@ -308,7 +323,7 @@ def main():
 
     # 2.7 the kit's global rules go into ~/.claude/CLAUDE.md between the markers. The file is
     # personal, hence: a backup before editing, a refusal on broken markers, line endings preserved.
-    B, E = "<!-- session-kit:rules:start -->", "<!-- session-kit:rules:end -->"
+    B, E = RULES_B, RULES_E
     rules = os.path.join(KIT if not a.dry_run else HERE, "rules", "global.md")
     md = os.path.join(CLAUDE, "CLAUDE.md")
     if os.path.exists(rules):
@@ -403,8 +418,8 @@ def main():
                       hook("UserPromptSubmit", "panel.py"))
     for ev, entry in WANTED:
         if a.dry_run:
-            # asking merge_hooks on a COPY: the dry run used to print "will be added" for every
-            # event, including the five that were already there and would merely be updated
+            # asking merge_hooks on a COPY, so the dry run tells "will be added" from "will be
+            # updated" instead of guessing
             import copy as _copy
             log.append("hook %s %s (dry run)" % (ev, merge_hooks(_copy.deepcopy(cur), ev, entry)))
         else:

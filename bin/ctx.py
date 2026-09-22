@@ -48,7 +48,7 @@ def main():
     a = sys.argv[1:]
     cmd = a[0] if a else ""
     if cmd == "done":
-        # ALL THREE VALUES ARE REQUIRED, AND THE REFUSAL IS LOUD. They used to be optional, and an
+        # ALL THREE VALUES ARE REQUIRED, AND THE REFUSAL IS LOUD. An
         # empty stream is indistinguishable from "this project has no streams": two works closed
         # in one console, the later one recorded nothing, and the next agent took the wrong
         # handoff without a single error along the way. A silent wrong intake is dearer than one
@@ -172,8 +172,8 @@ def main():
     elif not cmd:
         print(view.table())
     else:
-        # A MISTYPED COMMAND USED TO PRINT THE TABLE AND EXIT 0. `ctx.py doen <sid> ...` reported
-        # success while the session stayed open — the silent wrong outcome this file exists to
+        # A MISTYPED COMMAND FAILS. Printing the table with exit 0, `ctx.py doen <sid> ...` would
+        # report success while the session stayed open — the silent wrong outcome this file exists to
         # prevent, one letter away.
         print("unknown command: %s" % cmd)
         print("usage: ctx.py [watch|log N|stats|clean|done <sid> <stream> <handoff>"

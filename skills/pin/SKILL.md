@@ -1,6 +1,6 @@
 ---
 name: pin
-description: Finalizing a version on top of the previously pinned one — a diff from the last mark (and not from the start of the session), separating the planned from the noise and the curing of it, checks by a fresh critic until convergence, presenting to the author "what is now called the new version", and after his check — a new mark in BASELINE.md and in git. Call it when the result has reached a state that is worth checking by hand.
+description: Finalizing a version on top of the previously pinned one — a diff from the last mark (and not from the start of the session), separating the planned from the noise and the curing of it, a fresh critic over the whole version, presenting to the author "what is now called the new version", and after his check — a new mark in BASELINE.md and in git. Call it when the result has reached a state that is worth checking by hand.
 argument-hint: [opt. what to treat as the content of the version]
 ---
 
@@ -46,13 +46,13 @@ factual list of what changed in the subject matter, not in the files.
 If the planned work is not closed in full, say so plainly: a version is not "everything that piled up", it
 is precisely the progress on the declared goals.
 
-## PHASE 3 — polishing to convergence
+## PHASE 3 — the critic over the version
 
-Critic cycles over everything that enters the version: a fresh critic with no context, who has not seen the
-edits and is not hunting for petty nitpicks. It passes when he finds no SIGNIFICANT defects in the
-iteration's changes. The pre-existing and the unrelated go into the agenda, not into a blocker. The final
-pass is one cold critic over the artifact as a whole; whoever did the editing does not deliver the final
-verdict.
+A fresh critic with no context, who has not seen the edits, judges the version AS A WHOLE against the
+declared goals — does it answer them, does it hold. After a fix that changes the substance, again a
+fresh critic over the whole. It passes when nothing it finds changes what the author will check by hand.
+The pre-existing and the unrelated go into the agenda, not into a blocker. Whoever did the editing does
+not deliver the verdict.
 
 ## PHASE 4 — presenting it to the author (a gate, mandatory here)
 
@@ -93,6 +93,6 @@ author. So pinning ends here: the mark is written and the tag is made, and nothi
 pinning itself.
 
 Pushing at all — by the policy in the work's `.claude/ritual.md`, read from that repository and not
-from whichever one the console happens to be in. **Where the frame is silent or absent, the policy
-is FORBIDDEN**: an agent that guesses wrong in this direction publishes; guessing wrong in the other
+from whichever one the console happens to be in; its `Pin tags` line decides whether the tag travels
+with the branch. **Where the frame is silent or absent, the policy is FORBIDDEN**: an agent that guesses wrong in this direction publishes; guessing wrong in the other
 direction costs one question.

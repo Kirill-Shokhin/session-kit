@@ -91,11 +91,9 @@ hook that raises is silent — the console shows nothing.
 - Commit, amend, squash: freely, without asking.
 - Message style: public, about the result, no process and no session identifiers.
 - **Push: ALLOWED** — the author delegated publishing to the agents.
-- **The mirror APPENDS; it is no longer squashed to one commit.** It was published as a single commit
-  once, to leave the private history out of it. That is done, and from here each closing adds its own
-  commit: `install.py --publish` never squashed anyway, so the old rule described nothing, and a squash
-  would destroy the tag and the diff that `pin` measures every count from. `--force-with-lease` stays
-  as the push, so a rewrite is possible when it is genuinely meant.
+- **The mirror APPENDS: each closing adds its own commit.** A squash would destroy the tag and the diff
+  that `pin` measures every count from. The push is `--force-with-lease`, so a rewrite is possible when
+  it is genuinely meant.
 - Nothing personal travels: check `git status` against `.gitignore` before publishing.
 
 ## The gate

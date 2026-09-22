@@ -14,6 +14,15 @@ _SAID = False
 MARKS = (".claude/ritual.md", "HANDOFF.md", "STATE.md", ".claude/handoff.md")
 
 
+def _has_spoken(path):
+    """Has this session ever answered — a resumed session that has carries its own context back."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            return any('"type":"assistant"' in l.replace(" ", "") for l in f)
+    except (OSError, TypeError):
+        return False
+
+
 def main(d):
     global _SAID
     ctxlib.utf8_io()
@@ -79,8 +88,20 @@ def main(d):
         # A session's OWN closing is not an invitation to open it again: on `--resume` the id and
         # the whole context survive, and the agent was being told to take a handoff it had just
         # written. Its own re-check pass, if it had not happened yet, was lost with the flag.
-        closed = [e for e in ctxlib.closed_works(cwd) if e.get("sid") != sid]
-        if closed and src in ("clear", "startup", "resume"):
+        # A RESUMED CONVERSATION HAS ITS CONTEXT BACK: no intake is offered to it. A host restart
+        # resumes every open window at once, and each was told to open a handoff mid-conversation.
+        # A resumed session that never answered carries nothing and goes the ordinary way: that is
+        # the window closed right after a /clear, before the author wrote a word.
+        if src == "resume" and _has_spoken(d.get("transcript_path")):
+            closed = None
+            # a pending intake of a host killed without SessionEnd must not be replayed by the
+            # first prompt's hook either
+            ctxlib.state_save(sid, {"pending_open": False})
+        else:
+            closed = [e for e in ctxlib.closed_works(cwd) if e.get("sid") != sid]
+        if closed is None:
+            pass
+        elif closed and src in ("clear", "startup", "resume"):
             # what the closing knew carries over by itself: the author pressed /clear rather than
             # opening a new piece of work, and has no reason to state it again
             pend = ctxlib.pending(closed, cwd)

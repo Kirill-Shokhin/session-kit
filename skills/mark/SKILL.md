@@ -44,7 +44,8 @@ the journal of its own — that is what holds the provenance: it is visible who 
 
 ## Format
 
-READ THE TIME OFF THE MACHINE, never off your own sense of it:
+FIRST READ THE TIME OFF THE MACHINE, THEN WRITE THE ENTRY — never off your own sense of it, and not as a
+check after the entry is composed:
 
 ```bash
 date +%FT%H:%M                          # Git Bash and other POSIX shells
@@ -74,3 +75,5 @@ RULES:
 - The reason for discarding is WHAT refuted it, not "it did not fit".
 - Do not edit past entries after the fact. Something changed — a new entry with a reference to the old one.
 - One fork, one entry. Accumulating three at a time is not allowed: they congeal and lose their reasons.
+- Through a shell heredoc — quote the delimiter (`<<'MD'`), or backticks and `$` are executed and
+  vanish from the entry; Git Bash also eats doubled backslashes. When in doubt, write through a file.

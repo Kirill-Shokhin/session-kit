@@ -6,7 +6,7 @@ argument-hint: [opt. what feels off / which period to look at]
 
 Reviewing the kit. What feels off: $ARGUMENTS.
 
-The rituals are now executed by agents, and part of the triggers happen without the author's participation:
+The rituals are executed by agents, and part of the triggers happen without the author's participation:
 he sees neither the nudges, nor the moment of the stop, nor what the agent did with them. In such a scheme
 a crooked wording pushes the wrong way silently, and for years. This skill is the only place where the
 scheme is checked against itself.

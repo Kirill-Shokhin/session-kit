@@ -53,8 +53,8 @@ work … 75% … the watchdog does not let go
 The human has two actions: `/clear` and a message. There is nothing to remove the second one with —
 only a message starts the agent, and no other way to begin its turn exists.
 
-The point of the automation is that the second action stopped being a chore. It used to be spent on a
-ritual command (`/open`); now it is an ordinary remark on the matter at hand — "let's continue with
+The point of the automation is that the second action is not a chore: not a ritual command (`/open`),
+but an ordinary remark on the matter at hand — "let's continue with
 task such-and-such" — and the intake wedges in ahead of the reply to it. After `/clear` a hook marks
 the session as awaiting intake, prints a hint on the screen and duplicates the instruction into the
 first prompt. If the message itself cancels the intake ("no intake, just answer"), the agent obeys
@@ -183,8 +183,8 @@ as well: large and reversible is done with a note on how to roll it back; large 
 made reversible instead of being turned into a question. Internal technical forks do not belong to
 the human — they do not know about them and should not.
 
-*Done = passed the critics* — before saying "done", the agent runs a fresh critic with no context to
-convergence. The human sees the result of a consensus, not the moment when it seemed to the agent
+*Done = passed the critics* — before saying "done", the agent gives the work to a fresh critic with no
+context, who judges the whole result against the goal in the human's own words. The human sees the result of a consensus, not the moment when it seemed to the agent
 that the work was over. The watchdog checks this: declaring readiness without a credited check stops
 the agent once and sends it back to the critics.
 
