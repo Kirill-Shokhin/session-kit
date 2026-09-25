@@ -73,8 +73,8 @@ ENTRY POINT in the frame's list of streams (a charter, a state file): that path 
 handoff, and the gate says so. Other streams — by headings, do not go deeper, but know who is alive and where their files are, so as not
 to disturb them.
 
-PHASE 2 — THE ADJACENT. The levels below: the internal plan or roadmap (where your block and its gates
-are), the session docs, and the CODE the handoff points at with landmarks. An engineering handoff transfers
+PHASE 2 — THE ADJACENT. The levels below: the internal plan or roadmap — where the stream's goal and its
+top-level steps are named, and which of them your block and its gates sit under — the session docs, and the CODE the handoff points at with landmarks. An engineering handoff transfers
 together with its files. Not everything indiscriminately, but the load-bearing parts are better read than
 not.
 
@@ -101,12 +101,32 @@ PHASE 5 — PLAN. First the idea, then the vector. Say what the work is for — 
 must hold, in your own derivation from Phase 0, not a quote — and how the forward vector serves it. A
 vector is the previous agent's reading from inside its own frame; the handoff can be accurate in every
 fact and still point somewhere that no longer serves the idea. If it does not serve it, say so at the gate
-with the reason, and put the step that does. Then propose the steps with justifications. Do not attack
+with the reason, and put the step that does. Then propose this session's moves with justifications. Do not attack
 what is marked as parked with a reason, or the named boundaries.
 
-PHASE 6 — GATE. Present compactly: (1) the restored state — verified facts, not a retelling of the handoff, naming each part of the canon read,
-(2) the divergences from reality and the neighbors' delta, (3) what remains unverified, (4) which mark the
-count runs from and what has been draft since, (5) the plan of steps with justifications. STOP — the author
+PHASE 6 — GATE. One line naming the work you opened (with the evidence, when it was inferred), and one
+naming each part of the main document you read (Phase 0). Then the top of the goal tree, in a few lines —
+this IS the restored state:
+(1) the stream's goal — as the author names it (directly, or recorded as his in the frame), it stands as
+    named. A requirement he set on one part of the work, however strongly worded ("above everything else"),
+    is not that goal: it names a step or the block. Otherwise take the plan's or the frame's wording, or
+    derive it and mark it [derived], and test it: could it be one of the steps of something this stream
+    exists for? (The current block always can.) If so, name that larger thing instead — but not the
+    project's idea, which Phase 5 carries;
+(2) every step that goal needs, top level only — as the plan or the author names them (his decision,
+    carried by the frame or quoted in the handoff); derived from the goal where neither does (mark such a
+    step [derived]). Never a task queue, the plan's or the handoff's. Each carries a status: done (pinned
+    at or before the BASELINE mark — name the mark) / draft (done since the mark — printed "done, draft") / open
+    / parked (by the author, his reason in one line; never the next step). A status rests on what Phase 3
+    verified; one resting only on the handoff carries [unverified]. The current block sits under one of
+    these steps — name which.
+Divergences from reality, a neighbor's delta, numbers, files and cell counts go under the step they change,
+and only there; detail that changes neither a step's status nor this session's moves is left out (a
+divergence that changes the moves goes under the next open step) — a gate made of detail hides whether the
+agent sees the goal at all. Except: a neighbor working in the repository right now, in one line.
+Last: the next open step — why it serves the goal and, in one line, the idea (Phase 5) — and the few
+concrete moves this session makes on it, each with its justification; if the handoff's vector points
+elsewhere, that you dropped it and why. STOP — the author
 checks that the state was reproduced correctly and that there is no bias. After that you work on your own
 along the approved plan. Only an explicit "just execute" in $ARGUMENTS replaces the gate with a short
 status. A short first message from the author — a one-word go-ahead in any language — is the opposite:
