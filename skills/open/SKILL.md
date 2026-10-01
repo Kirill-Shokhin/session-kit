@@ -45,7 +45,7 @@ counting from the current HEAD as a draft.
 
 PHASE 0 — THE SHIFT (do NOT skip it). Read the project's main document YOURSELF — every part
 the frame names as the canon, not the first of them (a canon of state and of subject is two
-documents, and reading one produced a gate that was half an intake) — in full, or its load-bearing parts by the table of contents, but with your own eyes, not through retellings
+documents, and reading one produced a gate that was half an intake) — in full, or the parts the frame names for your stream (else its load-bearing parts by the table of contents), but with your own eyes, not through retellings
 from memory: without this the agent does not understand the domain and invents incorrectly. This is the
 shift from the base model to the project's mode of thinking, the precondition for speaking one language at
 one level. Plus the main document's key companions, by the sense of the task.
@@ -64,9 +64,12 @@ Take:
     was the wrong way. Do not go deeper into the archive without being told: old journals and DAGs lie there
     as provenance, and the author will send you there himself ("read the last five DAGs") when he sees you
     repeating the same mistakes;
-(b) the Bayes memory in full coverage — ALWAYS (it is behavior, not project): every file, at least to
-    its first paragraph and its Why, verbatim where it touches the task. Coverage is the rule, not the
-    word count; a partial read is said at the gate;
+(b) the Bayes memory in full coverage — ALWAYS (it is behavior, not project): every file the base index
+    lists, at least to its first paragraph and its Why, verbatim where it touches the task. Where the
+    memory is layered — a base index of rules for every agent, per-stream indexes, an archive — read the
+    base and YOUR stream's index the same way; other streams' layers and the archive are read by need,
+    never wholesale at the opening (everything read here is re-read by every later call). Coverage is
+    the rule, not the word count; a partial read is said at the gate;
 (c) the architectural landmarks and the code map of your own track.
 A stream with no handoff yet — a new one, or one kept by an agent without the kit — opens from its
 ENTRY POINT in the frame's list of streams (a charter, a state file): that path stands in for the
