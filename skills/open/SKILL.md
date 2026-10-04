@@ -64,12 +64,15 @@ Take:
     was the wrong way. Do not go deeper into the archive without being told: old journals and DAGs lie there
     as provenance, and the author will send you there himself ("read the last five DAGs") when he sees you
     repeating the same mistakes;
-(b) the Bayes memory in full coverage — ALWAYS (it is behavior, not project): every file the base index
-    lists, at least to its first paragraph and its Why, verbatim where it touches the task. Where the
-    memory is layered — a base index of rules for every agent, per-stream indexes, an archive — read the
-    base and YOUR stream's index the same way; other streams' layers and the archive are read by need,
-    never wholesale at the opening (everything read here is re-read by every later call). Coverage is
-    the rule, not the word count; a partial read is said at the gate;
+(b) the Bayes memory — ALWAYS (it is behavior, not project). Memory is read like skills, in two steps:
+    the index line (name + when to open + what is inside) is always in view; the file is opened when its
+    line fits. Where an index is split into «on opening» and «by situation», read every on-opening file of
+    the base index and of YOUR stream's index in full now; a by-situation file is opened at the moment its
+    trigger arises — before that move, not after it. Only the base index stays in view by itself; after a
+    context reset or compaction re-read YOUR stream's index, or its by-situation lines are gone. An index with no such split: every file it lists, at
+    least to its first paragraph and its Why. Other streams' layers and the archive are read by need, never
+    wholesale at the opening (everything read here is re-read by every later call). Coverage is the rule,
+    not the word count; a partial read is said at the gate;
 (c) the architectural landmarks and the code map of your own track.
 A stream with no handoff yet — a new one, or one kept by an agent without the kit — opens from its
 ENTRY POINT in the frame's list of streams (a charter, a state file): that path stands in for the

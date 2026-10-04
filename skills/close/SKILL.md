@@ -119,7 +119,10 @@ WHERE IT LANDS: the base memory is read by every opening of every stream, so it 
 behavior every agent needs — the rule as the right action, its Why, its How to apply. A rule, an
 epistemic or a vision that holds for one stream goes to that stream's layer; the incident that taught it,
 dates, run ids and quotes that only prove history go to the archive beside it, linked; the state of the
-work goes to the handoff, not to memory.
+work goes to the handoff, not to memory. A memory file holds one situation (or one cluster of rules that
+govern every step); its description and its index line say when to open it and what is inside. It goes
+under «on opening» only if it governs every step or its situation arises in most sessions of that layer;
+otherwise under «by situation», with its trigger.
 
 PHASE 6 — THE FORWARD VECTOR: first the idea the work serves and why it must hold, as you derived it (not a
 quote), and how the next step serves it — a vector without its why is the next agent's narrow window; then
