@@ -450,7 +450,47 @@ def pending(works, cwd=""):
             exact.append(w)
     if len(works) == 1 and (not cwd or exact):
         return {"arg": open_arg(works[0]), "choices": []}
-    return {"arg": "", "choices": [open_arg(w) or "(the closing named nothing)" for w in works]}
+    # none of them is this terminal's: saying "closed in this console" sent the agent to choose
+    # among foreign works as if its own were one of them
+    foreign = bool(me) and not any(same_console(w, me) for w in works if marked(w))
+    return {"arg": "", "foreign": foreign,
+            "choices": [open_arg(w) or "(the closing named nothing)" for w in works]}
+
+
+def own_sid(sid):
+    """The id this session really runs under, when the agent hands in the one it was told at start.
+
+    A conversation moved into a background job runs on under a new id with no SessionStart, and its
+    context still names the old one. Closing under the old id stamped the old window's terminal, and
+    the new window's /clear was offered foreign works only. The process exports its current id; it is
+    taken only when THIS session's own SessionStart told it `sid` — a recovery of a dead session from
+    another window names an id its own start never did, and stays as given.
+    """
+    me = os.environ.get("CLAUDE_CODE_SESSION_ID") or ""
+    if not me or me == sid:
+        return sid
+    import glob
+    # the id its own start named, or the one the guard announced after an earlier move
+    said = {"SessionStart": "The id of this session: " + sid, "Stop": "It is now %s " % sid}
+    for path in glob.glob(os.path.join(os.path.expanduser("~"), ".claude", "projects", "*",
+                                       me + ".jsonl")):
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                if sid not in line:
+                    continue
+                a = json.loads(line).get("attachment") or {}
+                if said.get(a.get("hookEvent"), "\0") in line:
+                    return me
+    return sid
+
+
+def intake_lead(pend):
+    """What happened before this session — shared by both hooks, so the two cannot drift apart."""
+    if isinstance(pend, dict) and pend.get("foreign"):
+        return ("The context was cleared, but the previous session in this console recorded no "
+                "closing of its own (closed under a stale id, or not closed at all). ")
+    return ("The previous session in this console was closed by the ritual, and the context was "
+            "cleared for the sake of continuing. ")
 
 
 def intake_body(pend):
@@ -471,7 +511,9 @@ def intake_body(pend):
                 "decide it by freshness or by proximity: deciding it once handed an agent someone "
                 "else's work, and every link of the ritual reported success. Ask first; the gate "
                 "comes after."
-                % ("MORE THAN ONE work was closed in this console" if many else
+                % ("NO closing was recorded from this terminal; works closed from OTHER terminals "
+                   "in this directory" if pend.get("foreign") else
+                   "MORE THAN ONE work was closed in this console" if many else
                    "A work was closed NEARBY but not in this exact directory",
                    "; ".join('"%s"' % c for c in pend["choices"])))
     if pend.get("arg"):

@@ -30,8 +30,7 @@ def main(d):
         sys.stdout.write(json.dumps({"hookSpecificOutput": {
             "hookEventName": "UserPromptSubmit",
             "additionalContext":
-                "BEFORE answering this message: the previous session in this console was closed by "
-                "the ritual, and the context was cleared for the sake of continuing. "
+                "BEFORE answering this message: " + ctxlib.intake_lead(pend)
                 + ctxlib.intake_body(pend)
                 + ("" if isinstance(pend, dict) and pend.get("choices") else
                    " Verify what is written against reality and reach the gate, then answer.")

@@ -65,9 +65,22 @@ def is_delivery(msg):
     weak = WEAK_RE.search(msg)
     return not (weak and weak.start() < done.start())
 
+# THE AGENT'S OWN ID, WHEN IT CHANGED UNDER IT. A conversation moved into a background job runs on
+# under a new session id with no SessionStart, so the agent keeps the old one from its context. It
+# closed under that old id, the closing carried the old terminal, and its own /clear was then
+# offered four foreign works and none of its own. Said once, ahead of whatever this stop says.
+NOTE = []
+
+
 def out(ctx):
     sys.stdout.write(json.dumps({"hookSpecificOutput": {
-        "hookEventName": "Stop", "additionalContext": ctx}}, ensure_ascii=False))
+        "hookEventName": "Stop", "additionalContext": "".join(NOTE) + ctx}}, ensure_ascii=False))
+    NOTE[:] = []
+
+
+def err(text):
+    sys.stderr.write("".join(NOTE) + text)
+    NOTE[:] = []
 
 
 def snooze(pct, c):
@@ -101,6 +114,12 @@ def main(d):
         return 0
     c = ctxlib.cfg()
     st = ctxlib.state_load(sid)
+    if not st.get("cwd"):
+        # `cwd` is written by SessionStart only: without it this id never had a start
+        st = ctxlib.state_save(sid, {"cwd": d.get("cwd") or "", "console": ctxlib.console()})
+        NOTE.append("YOUR SESSION ID CHANGED without a session start (the conversation was moved "
+                    "into a background job or resumed elsewhere). It is now %s — use it, not the "
+                    "one in your context, in every ctx.py call (verified, done).\n\n" % sid)
     u = ctxlib.usage(sid, d.get("transcript_path"))
     pct = u[0] if u else None
 
@@ -154,7 +173,7 @@ def main(d):
         if fire and not settled:
             ctxlib.state_save(sid, {"gate_at": pct, "gate_blind": pct is None})
             ctxlib.event("verify_gate", sid, pct or 0, d.get("cwd", ""))
-            sys.stderr.write(chr(10).join([
+            err(chr(10).join([
                 "READINESS DECLARED, THERE IS NO CONSENSUS.",
                 "The author looks at a result that passed a check, not at the moment when it seemed",
                 "to you that the work had ended.",
@@ -186,7 +205,9 @@ def main(d):
     # `os.replace` (another process holding the file, which does happen on Windows) took the whole
     # branch down with it: no stop, no message, exit 0.
     try:
-        ctxlib.state_save(sid, {"last_pct": round(pct, 1)})
+        # The terminal is re-stamped on every stop: a session that outlives its process (a resumed
+        # background job) kept the identity of the dead one, and its own /clear became "foreign".
+        ctxlib.state_save(sid, {"last_pct": round(pct, 1), "console": ctxlib.console()})
     except Exception:
         pass
 
@@ -195,7 +216,7 @@ def main(d):
         if not st.get("recheck_asked"):
             ctxlib.state_save(sid, {"recheck_asked": True})
             ctxlib.event("recheck", sid, pct, d.get("cwd", ""))
-            sys.stderr.write(
+            err(
                 "RECHECK AFTER THE CLOSING (one pass, then I let go).\n"
                 "You have just assembled the handoff on a full window — such a handoff\n"
                 "systematically holds unfinished and imprecise places. Re-read YOUR OWN files\n"
@@ -218,7 +239,7 @@ def main(d):
             except Exception:
                 pass
             ctxlib.event("block", sid, pct, d.get("cwd", ""))
-            sys.stderr.write(
+            err(
                 "STOP ON WINDOW FILL: %d%% (%s).\n"
                 "From this level on your judgment is biased, and it only gets worse.\n\n"
                 "1. Bring the current micro-task to a meaningful boundary, start no new ones.\n"
@@ -276,6 +297,13 @@ def main(d):
 
 # stdin once, before the shield: computing its arguments here would drain the stream, and
 # reading the globals here would read them BEFORE main() ever set them
+def run(d):
+    rc = main(d)
+    if NOTE and rc != 2:
+        out("")
+    return rc
+
+
 _D = ctxlib.stdin_json()
-sys.exit(ctxlib.shield(lambda: main(_D), "guard", _D.get("session_id", ""),
+sys.exit(ctxlib.shield(lambda: run(_D), "guard", _D.get("session_id", ""),
                        _D.get("cwd", "")) or 0)

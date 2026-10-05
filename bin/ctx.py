@@ -43,6 +43,13 @@ def _date_defect(path):
     return None
 
 
+def _own(sid):
+    me = ctxlib.own_sid(sid)
+    if me != sid:
+        print("session %s moved: it runs now as %s, and that id is the one recorded" % (sid, me))
+    return me
+
+
 def main():
     ctxlib.utf8_io()
     a = sys.argv[1:]
@@ -60,7 +67,7 @@ def main():
             print("all three values are what the next agent is opened with; without them the "
                   "intake has to guess, and a wrong guess is silent")
             return 1
-        sid, stream = a[1], a[2].strip()
+        sid, stream = _own(a[1]), a[2].strip()
         raw = " ".join(a[3:]).strip()
         if not stream:
             print("the stream must be named: it is what the next agent is opened with")
@@ -109,14 +116,19 @@ def main():
         # dead session lands here — the terminal is UNKNOWN, and unknown must stay unknown: taking
         # the caller's would brand a foreign work as this window's and hand it over on the next
         # `/clear`. An unmarked closing is offered as a question, which is the honest outcome.
+        # the caller IS the session's own process when the ids agree: a session closed before its
+        # first Stop under a new id has no terminal in its state yet
+        own = sid == os.environ.get("CLAUDE_CODE_SESSION_ID")
         ctxlib.event("done", sid, d.get("pct", 0), cwd,
-                     {"stream": stream, "handoff": h, "console": st.get("console") or []})
+                     {"stream": stream, "handoff": h,
+                      "console": st.get("console") or (ctxlib.console() if own else [])})
         print("session %s marked as closed, stream: %s, handoff: %s"
               % (sid, stream, h or "NONE — the next agent will be told to find it itself"))
     elif cmd == "verified":
         if len(a) < 2:
             print("a session id is required")
             return 1
+        a[1] = _own(a[1])
         # WHERE THE CHECK STANDS ON THE WINDOW, OR NOTHING AT ALL. `0` was written here when the
         # fill was unknown, and zero is a POSITION: every later delivery then read as "the window
         # grew by more than the re-arm step since the check", so the gate fired on every single

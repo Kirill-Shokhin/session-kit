@@ -107,8 +107,7 @@ def main(d):
             pend = ctxlib.pending(closed, cwd)
             ctxlib.state_save(sid, {"pending_open": pend})
             lines.append(
-                "The previous session in this console was closed by the ritual, and the context "
-                "was cleared for the sake of continuing. " + ctxlib.intake_body(pend)
+                ctxlib.intake_lead(pend) + ctxlib.intake_body(pend)
                 + ("" if pend.get("choices") else
                    " Verify what is written against reality and reach the gate. The author awaits "
                    "the gate, not a question of whether to start the intake."))
@@ -130,7 +129,11 @@ def main(d):
     if lines:
         out = {"hookSpecificOutput": {"hookEventName": "SessionStart",
                                       "additionalContext": "\n".join(lines)}}
-        if ctxlib.state_load(sid).get("pending_open"):
+        pend = ctxlib.state_load(sid).get("pending_open")
+        if isinstance(pend, dict) and pend.get("foreign"):
+            out["systemMessage"] = ("No closing of this console's own session was found. Name the "
+                                    "work being continued — the agent will open it.")
+        elif pend:
             # SessionStart puts text into the context but does not start the agent: generation
             # begins with a message from the author. So the hint goes to his screen.
             out["systemMessage"] = ("The previous session was closed by the ritual. Write what we "
