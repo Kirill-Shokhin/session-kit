@@ -82,4 +82,7 @@ What reality is checked with at the opening (the commands that must work):
 ## The gate
 
 What the author expects at the stop before continuing:
-- <the verified state, the divergences, the unverified, which mark the count runs from, the plan>
+- FIRST one line naming the work opened, then the stream's goal and every top-level step it needs, each done / draft / open / parked; everything
+  else only under the step it changes; then the next open step and this session's moves (the `open`
+  skill, PHASE 6)
+- <anything this project adds: e.g. which checks must have been run before the stop>
