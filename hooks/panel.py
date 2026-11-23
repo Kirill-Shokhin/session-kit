@@ -33,7 +33,7 @@ def main(d):
                 "BEFORE answering this message: " + ctxlib.intake_lead(pend)
                 + ctxlib.intake_body(pend)
                 + ("" if isinstance(pend, dict) and pend.get("choices") else
-                   " Verify what is written against reality and reach the gate, then answer.")
+                   " Verify what is written against reality, give the gate, answer, then work on.")
                 + " If the message cancels the intake — obey it."}},
             ensure_ascii=False))
 

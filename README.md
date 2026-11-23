@@ -47,7 +47,8 @@ work … 60% … the watchdog does not let go
   → recheck        the watchdog demands one pass over what it wrote itself
   → /clear         the human clears the context
   → any message    the intake wedges in ahead of the reply to it
-  → GATE           the human checks the restored state and the plan
+  → GATE           the agent reports the restored state and the plan, and works on along it;
+                   the human checks it when he reads it, his correction taken when it comes
 ```
 
 The human has two actions: `/clear` and a message. There is nothing to remove the second one with —
@@ -60,8 +61,8 @@ the session as awaiting intake, prints a hint on the screen and duplicates the i
 first prompt. If the message itself cancels the intake ("no intake, just answer"), the agent obeys
 the human.
 
-The second action stays empty in exactly one case: when only the gate is needed and nothing else.
-Then writing "go" is enough.
+The second action stays empty in exactly one case: when the work is simply to go on. Then writing "go"
+is enough.
 
 **Which work is handed over is decided by the terminal, not by the directory.** `/clear` resets the
 conversation inside the same `claude` process rather than restarting it, so a closing and the intake

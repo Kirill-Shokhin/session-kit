@@ -109,8 +109,8 @@ def main(d):
             lines.append(
                 ctxlib.intake_lead(pend) + ctxlib.intake_body(pend)
                 + ("" if pend.get("choices") else
-                   " Verify what is written against reality and reach the gate. The author awaits "
-                   "the gate, not a question of whether to start the intake."))
+                   " Verify what is written against reality, give the gate and work on along it. The "
+                   "author awaits the gate and the work, not a question of whether to start the intake."))
         elif any(os.path.exists(os.path.join(cwd, m)) for m in MARKS):
             lines.append(
                 "The session ritual is in force in this project. If you are continuing work "
@@ -139,7 +139,7 @@ def main(d):
             # begins with a message from the author. So the hint goes to his screen.
             out["systemMessage"] = ("The previous session was closed by the ritual. Write what we "
                                     "are doing next — the handoff intake runs before the reply. "
-                                    "If you only need the gate — write \"go\".")
+                                    "To just carry on — write \"go\".")
         sys.stdout.write(json.dumps(out, ensure_ascii=False))
         _SAID = True
         return

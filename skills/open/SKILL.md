@@ -132,16 +132,19 @@ divergence that changes the moves goes under the next open step) — a gate made
 agent sees the goal at all. Except: a neighbor working in the repository right now, in one line.
 Last: the next open step — why it serves the goal and, in one line, the idea (Phase 5) — and the few
 concrete moves this session makes on it, each with its justification; if the handoff's vector points
-elsewhere, that you dropped it and why. STOP — the author
-checks that the state was reproduced correctly and that there is no bias. After that you work on your own
-along the approved plan. Only an explicit "just execute" in $ARGUMENTS replaces the gate with a short
-status. A short first message from the author — a one-word go-ahead in any language — is the opposite:
-he is being told by his console that writing anything at all starts the intake, and what he is waiting for
-is exactly this gate. The gate asks nothing the working mode would strike out, and it is the only
-stop: once the author has answered it, the mode decides what else goes to them.
+elsewhere, that you dropped it and why. THEN KEEP WORKING, in the same turn, along these moves: the gate
+is a report, not a stop, unless the working mode itself asks every step to be shown before it is taken.
+The author reads it when he reads it and checks that the state was reproduced correctly and that there is
+no bias; his correction is taken the moment it arrives, and what was done before it is re-weighed against
+it. A gate that stopped collided with every mechanism that holds a session on its owed work, and left the
+author's console idle while he was away (the author, 2026-11-23: «гейт то у нас противоречит. работай в
+общем. и надо его убрать»). Only an explicit "just execute" in $ARGUMENTS shortens the gate to a short
+status. A short first message from the author — a one-word go-ahead in any language — shortens nothing: he
+is being told by his console that writing anything at all starts the intake, and what he wants is exactly
+this gate, then the work. The gate asks nothing the working mode would strike out.
 
-START THIS SESSION'S JOURNAL (skill mark) with the first fork after the intake — whether the author
-answered the gate or turned the session elsewhere — and write the forks into it at the moment they
+START THIS SESSION'S JOURNAL (skill mark) with the first fork after the intake — a move of the plan
+changed or dropped, or the author turning the session elsewhere — and write the forks into it at the moment they
 happen, especially the discarded options. The closing ritual assembles the journal, not recollections.
 
 RULES ON TOP (from the Bayes memory, apply from the first step): do not re-litigate the author's protected
