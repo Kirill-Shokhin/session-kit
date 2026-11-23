@@ -61,7 +61,7 @@ def left(d, c):
             patch["limits"] = d["rate_limits"]
         ctxlib.save(sid, patch)
 
-    col = RED if pct >= c["hard_pct"] else (YEL if pct >= c["soft_pct"] else GRN)
+    col = RED if pct >= c["hard_pct"] else GRN
     parts = [CYA + os.path.basename(cur.rstrip("/\\")) + R]
     b = branch(cur)
     if b:
@@ -86,7 +86,7 @@ def left(d, c):
 def left_short(d, c):
     cw = d.get("context_window") or {}
     pct = float(cw.get("used_percentage") or 0)
-    col = RED if pct >= c["hard_pct"] else (YEL if pct >= c["soft_pct"] else GRN)
+    col = RED if pct >= c["hard_pct"] else GRN
     cur = (d.get("workspace") or {}).get("current_dir") or ""
     return "%s  %s%s %d%%%s" % (CYA + os.path.basename(cur.rstrip("/\\"))[:12] + R,
                                 col, ctxlib.bar(pct, 8), round(pct), R)
@@ -94,7 +94,7 @@ def left_short(d, c):
 
 def left_ctx_only(d, c):
     pct = float((d.get("context_window") or {}).get("used_percentage") or 0)
-    col = RED if pct >= c["hard_pct"] else (YEL if pct >= c["soft_pct"] else GRN)
+    col = RED if pct >= c["hard_pct"] else GRN
     return "%s%d%%%s" % (col, round(pct), R)
 
 
@@ -143,7 +143,7 @@ def swarm_items(c, sid):
         if x.get("sid") == sid:
             continue
         pct = x.get("pct") or 0
-        col = RED if pct >= c["hard_pct"] else (YEL if pct >= c["soft_pct"] else GRN)
+        col = RED if pct >= c["hard_pct"] else GRN
         mark = "!" if x.get("compacted") else (
             "~" if (time.time() - (x.get("ts") or 0)) > c["stale_sec"] else "")
         out.append("%s%s %d%%%s%s" % (col, os.path.basename((x.get("cwd") or "?")

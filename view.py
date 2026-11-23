@@ -85,7 +85,7 @@ def table():
     for d in out:
         pct = d.get("pct") or 0
         stale = (time.time() - (d.get("ts") or 0)) > c["stale_sec"]
-        col = RED if pct >= c["hard_pct"] else (YEL if pct >= c["soft_pct"] else GRN)
+        col = RED if pct >= c["hard_pct"] else GRN
         state = d.get("state", "live")
         tag = GRN + "closed" + R if state == "closed" else ""
         if d.get("compacted"):
@@ -103,7 +103,7 @@ def table():
         fresh_sw = sw.get("swarm_ts") and (time.time() - sw["swarm_ts"]) < ctxlib.cfg()["hide_sec"]
         for t in ((sw.get("swarm") or []) if fresh_sw else []):
             sp = t.get("pct") or 0
-            sc = RED if sp >= c["hard_pct"] else (YEL if sp >= c["soft_pct"] else GRN)
+            sc = RED if sp >= c["hard_pct"] else GRN
             lines.append("   %s└ %-17s%s %s%s %3d%%%s %s" % (
                 DIM, t.get("name", "")[:17], R, sc, ctxlib.bar(sp, 10), round(sp), R,
                 DIM + (t.get("status") or "") + R))
@@ -145,8 +145,8 @@ def stats():
     unclosed = [s for s, ks in by_sid.items() if "block" in ks and "done" not in ks]
     ungated = [s for s, ks in by_sid.items() if "verify_gate" in ks and "verify" not in ks]
     clean = [s for s, ks in by_sid.items() if "done" in ks and "block" not in ks]
-    out = ["nudges %d · soft thresholds %d · stops %d · closings %d · critic gates %d"
-           % (cnt.get("nudge", 0), cnt.get("soft", 0), cnt.get("block", 0), cnt.get("done", 0),
+    out = ["nudges %d · stops %d · closings %d · critic gates %d"
+           % (cnt.get("nudge", 0), cnt.get("block", 0), cnt.get("done", 0),
               cnt.get("verify_gate", 0)),
            "closed before the stop: %s%d%s (the watchdog worked as a reminder, not as a stop)"
            % (GRN, len(clean), R)]

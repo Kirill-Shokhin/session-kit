@@ -6,7 +6,7 @@
   python install.py --publish "..." commit your own edits and push them to the repository
   python install.py --check         which installed skills are behind the repository
   python install.py --dry-run       show what will be done
-  python install.py --soft 60 --hard 75   the context window watchdog thresholds
+  python install.py --hard 60             the closing threshold
 
 What it does: puts the skills into ~/.claude/skills, the commands into ~/.claude/commands, the critic
 into ~/.claude/agents,
@@ -151,22 +151,17 @@ def main():
                     help="git pull in the kit, then the usual installation")
     ap.add_argument("--publish", metavar="MESSAGE",
                     help="commit the kit's edits and push them to the repository")
-    ap.add_argument("--soft", type=int, default=None)
     ap.add_argument("--hard", type=int, default=None)
     a = ap.parse_args()
     if a.check:
         if (a.update or a.publish or a.dry_run
-                or a.soft is not None or a.hard is not None):
+                or a.hard is not None):
             print("--check reports and does nothing else; run it on its own")
             return 1
         bad = installed_drift()
         print(chr(10).join("  " + x for x in bad) if bad
               else "every skill installed matches the repository (glossary applied)")
         return 1 if bad else 0
-    if a.soft is not None and a.hard is not None and a.soft >= a.hard:
-        print("the reminder threshold must be below the stop: --soft %d --hard %d"
-              % (a.soft, a.hard))
-        return 1
     log = []
 
     # 0. synchronization with the repository — the kit lives on several machines
@@ -368,16 +363,15 @@ def main():
             broken = True          # a broken config is no reason to silently reset the settings
     if broken:
         log.append("config.json is unreadable — left as is, the settings are untouched")
-    if a.soft is not None:
-        cfg["soft_pct"] = a.soft
+    if cfg.pop("soft_pct", None) is not None and cfg.get("hard_pct") == 75:
+        cfg["hard_pct"] = 60       # the old pair's closing, carried over: one threshold, at 60
     if a.hard is not None:
         cfg["hard_pct"] = a.hard
-    if broken and (a.soft is not None or a.hard is not None):
+    if broken and a.hard is not None:
         # With the file unwritten, reporting applied thresholds would be a lie: the old ones stay.
         log.append("THRESHOLDS FROM FLAGS NOT APPLIED: config.json is unreadable, fix or delete it")
     elif not broken:
-        log.append("thresholds: reminder %d%%, stop %d%%"
-                   % (cfg.get("soft_pct", 60), cfg.get("hard_pct", 75)))
+        log.append("the closing threshold: %d%%" % cfg.get("hard_pct", 60))
     if not a.dry_run and not broken:
         os.makedirs(KIT, exist_ok=True)
         json.dump(cfg, open(cfgp, "w", encoding="utf-8"), ensure_ascii=False, indent=2)

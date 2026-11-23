@@ -67,20 +67,20 @@ def main(d):
         # sit far above the new fill, and every "has it grown by the re-arm step" test answers no
         # for the rest of the session — the critic gate and the journal reminders both go dead.
         # `blocked_at` was already being reset; its two neighbours were not.
-        ctxlib.state_save(sid, {"state": "live", "soft_warned": False, "blocked_at": None,
+        ctxlib.state_save(sid, {"state": "live", "blocked_at": None,
                           "gate_at": None, "verified_at": None, "nudged_at": None,
                           "verified": False, "gate_blind": False,
                           "compacted": not (own or done)})
     else:
         # A CLOSED SESSION STAYS CLOSED ACROSS `--resume`. Overwriting the state with "live" here
-        # re-armed the watchdog on work that had already been closed and recorded: the soft
-        # threshold came again, and at the hard one the agent was told to close what was closed.
+        # re-armed the watchdog on work that had already been closed and recorded: at the
+        # threshold the agent was told to close what was closed.
         was = ctxlib.state_load(sid).get("state")
         # the terminal is recorded by the session's OWN hook: `ctx.py done` may be run from a
         # different window (recovering after a crash, tidying up a dead session), and stamping the
         # caller's terminal there would hand that window's next intake somebody else's work
         ctxlib.state_save(sid, {"state": was if was == "closed" else "live",
-                                "cwd": cwd, "soft_warned": False,
+                                "cwd": cwd,
                                 "console": ctxlib.console()})
         # right after the closing ritual the intake is not up for discussion: the author already
         # approved it by pressing /clear, and awaits not the question "should I run open" but the
@@ -118,8 +118,8 @@ def main(d):
                 "a one-off question, the ritual is not needed.")
     # The id and the rule set are needed in any session: after a compaction the agent is also
     # asked to run verified and done, and without the sid it cannot.
-    lines.append("The id of this session: %s. The context window watchdog thresholds: reminder "
-                 "%d%%, stop %d%%." % (sid, c["soft_pct"], c["hard_pct"]))
+    lines.append("The id of this session: %s. The context window watchdog closes the session at "
+                 "%d%%; there is no warning before it." % (sid, c["hard_pct"]))
     mode = c.get("mode", "autonomous")
     rp = os.path.join(os.path.expanduser("~"), ".claude", "kit", "rules", mode + ".md")
     if os.path.exists(rp):

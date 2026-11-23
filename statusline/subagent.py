@@ -24,7 +24,7 @@ def main(d):
         line = [name, DIM + status + R]
         if tok and win:
             pct = tok * 100.0 / win
-            col = RED if pct >= c["hard_pct"] else (YEL if pct >= c["soft_pct"] else GRN)
+            col = RED if pct >= c["hard_pct"] else GRN
             line.append("%s%s %d%%%s" % (col, ctxlib.bar(pct, 8), round(pct), R))
             snap.append({"name": name, "pct": round(pct, 1), "status": status})
         desc = t.get("label") or t.get("description")

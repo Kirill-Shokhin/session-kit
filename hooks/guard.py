@@ -263,18 +263,10 @@ def main(d):
             return 2
         return 0
 
-    if pct >= c["soft_pct"] and not st.get("soft_warned"):
-        ctxlib.state_save(sid, {"soft_warned": True, "nudged_at": pct})
-        ctxlib.event("soft", sid, pct, d.get("cwd", ""))
-        out("The window is %d%% full (%s). The closing threshold is %d%%. Start no new large "
-            "branches — finishing what is already found, delivering what is built and a background "
-            "run already going are not new branches. Work left that will not fit — tell the author "
-            "in one line what it is, so the window is not read as a lack of work. If there was a fork since the last journal entry — a discarded option, a "
-            "change of direction, a measurement, a divergence from expectation, a course "
-            "correction from the author — write it down now (the mark skill). There were no "
-            "forks — nothing needs to be written."
-            % (round(pct), ctxlib.fmt(used, size), c["hard_pct"]))
-        return 0
+    # NO WARNING AHEAD OF THE CLOSING. A notice "the closing is near" before the threshold only
+    # got in the way: the agent wound down work it could still do, or closed early,
+    # and a stop hook that holds the console on its owed moves (`gfso hold`) then kept it — two
+    # hooks pulling apart. One number: below it work, at it close (the author, 2026-11-23).
 
     # a quiet nudge on the GROWTH of the window: the growth is proportional to the work done,
     # and hence to the number of forks that would otherwise stay unwritten
@@ -286,12 +278,11 @@ def main(d):
     if pct - base >= c["nudge_step"]:
         ctxlib.state_save(sid, {"nudged_at": pct})
         ctxlib.event("nudge", sid, pct, d.get("cwd", ""))
-        out("Window: %d%% (+%d%% since the last mark). Go over the list of forks: a discarded "
+        out("Go over the list of forks: a discarded "
             "option · a decision that changes direction · a measurement · a divergence from "
             "expectation · a course correction from the author. Whatever of that happened since "
             "the last mark — write it into the session journal (the mark skill), one entry per "
-            "fork. Nothing happened — carry on, this needs no reply."
-            % (round(pct), round(pct - base)))
+            "fork. Nothing happened — carry on, this needs no reply.")
     return 0
 
 

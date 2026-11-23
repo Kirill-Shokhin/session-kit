@@ -12,8 +12,7 @@ CTX_DIR = os.path.join(HOME, ".claude", "ctx")
 CFG_PATH = os.path.join(HOME, ".claude", "kit", "config.json")
 
 DEFAULTS = {
-    "soft_pct": 60,       # reminder: time to record decisions and plan the closing
-    "hard_pct": 75,       # block the stop until close has been performed
+    "hard_pct": 60,       # block the stop until close has been performed
     "nudge_from": 20,     # from which fill level to start reminding about the journal
     "nudge_step": 10,     # and after what increment of the window to repeat
     "snooze_pct": 5,      # by how many % of the window the watchdog goes quiet after a refusal
@@ -36,7 +35,7 @@ DEFAULTS = {
 }
 
 
-_NUM = ("soft_pct", "hard_pct", "nudge_from", "nudge_step", "snooze_pct", "regate_pct",
+_NUM = ("hard_pct", "nudge_from", "nudge_step", "snooze_pct", "regate_pct",
         "stale_sec", "hide_sec", "panel_sec", "fallback_window", "handoff_sec")
 
 

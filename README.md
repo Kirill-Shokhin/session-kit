@@ -30,7 +30,7 @@ python ~/.claude/kit/install.py --publish "what changed" # publish your edits, t
                                                        # (needs your own remote, not this repo)
 python ~/.claude/kit/install.py --dry-run             # see what would be done
 python ~/.claude/kit/install.py --check               # are the installed skills behind the repo
-python ~/.claude/kit/install.py --soft 60 --hard 75   # your own thresholds
+python ~/.claude/kit/install.py --hard 60             # your own closing threshold
 ```
 
 The installer puts the skills into `~/.claude/skills`, merges the status line and five hooks into
@@ -42,7 +42,7 @@ with whatever python is there, and do not copy `settings.json` by hand.
 ## The session cycle
 
 ```
-work … 75% … the watchdog does not let go
+work … 60% … the watchdog does not let go
   → close          the agent writes the handoff, the DAG, the journal, commits, silences the watchdog
   → recheck        the watchdog demands one pass over what it wrote itself
   → /clear         the human clears the context
@@ -122,9 +122,10 @@ that the work stops happening in a live dialogue.
 
 2. **The context window watchdog** (a `Stop` hook) fires when the agent has finished a reply — that
    is, at a micro-task boundary. Every +10% of fill it reminds you to go over the list of forks and
-   write what happened into the journal; nothing happened — no entry. At 60% it demands that no new
-   branches be started. At 75% it returns code 2 and does not allow a stop until the `close` skill
-   has been executed.
+   write what happened into the journal; nothing happened — no entry. At 60% it returns code 2 and
+   does not allow a stop until the `close` skill has been executed. There is no warning before it:
+   a notice that the closing is near only made the agent wind down work it could still do, and
+   pulled against a hook that holds the console on its owed moves.
 
    The watchdog does not block the human's question and does not interfere with the reply — it
    prevents the agent from STOPPING after the reply. That is why "answer me, then close" works by
@@ -261,8 +262,7 @@ kit/
 
 | key | default | meaning |
 |---|---|---|
-| `soft_pct` | 60 | do not start new branches, record the forks |
-| `hard_pct` | 75 | stop until `close` has been performed |
+| `hard_pct` | 60 | stop until `close` has been performed |
 | `snooze_pct` | 5 | by how many percent of the window the watchdog goes quiet after a refusal |
 | `nudge_from` | 20 | from which fill level the reminders start counting (the first arrives a step later) about the journal |
 | `nudge_step` | 10 | and after what increment of the window to repeat |
@@ -275,7 +275,7 @@ kit/
 | `mode` | autonomous | which body of rules is injected: `autonomous` or `stepwise` |
 | `fallback_window` | 200000 | window size if it was not reported (can be set via `CLAUDE_CTX_WINDOW`) |
 
-The closing itself costs 1–5% of the window, so the reserve from 75% is more than enough: the
+The closing itself costs 1–5% of the window, so the reserve from 60% is more than enough: the
 threshold was chosen for the sake of the quality of judgment, not for the room the ritual takes.
 
 The detector that recognizes a declared delivery reads English and Russian. Working in a third
