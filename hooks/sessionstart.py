@@ -118,8 +118,9 @@ def main(d):
                 "a one-off question, the ritual is not needed.")
     # The id and the rule set are needed in any session: after a compaction the agent is also
     # asked to run verified and done, and without the sid it cannot.
-    lines.append("The id of this session: %s. The context window watchdog closes the session at "
-                 "%d%%; there is no warning before it." % (sid, c["hard_pct"]))
+    # …and no threshold: told the number, an agent counted toward it and wound its work down ahead of the stop (the
+    # author, 2026-11-23: «а зачем он пишет это? так агент начнает избегать»). The watchdog says so when it stops it.
+    lines.append("The id of this session: %s." % sid)
     mode = c.get("mode", "autonomous")
     rp = os.path.join(os.path.expanduser("~"), ".claude", "kit", "rules", mode + ".md")
     if os.path.exists(rp):
