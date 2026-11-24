@@ -179,11 +179,58 @@ def swarm_line(items, hidden=0):
     return line + (DIM + " +%d" % hidden + R if hidden else "") + alarm()
 
 
+BADGE_TTL, BADGE_RUN_S = 15, 1.5
+
+
+def badge(d, c):
+    """A word about this console from a command the USER names for its project — `badges` in the kit's config.json,
+    {project root: [program, arg, …]} (a gfso project: `gfso whoami`, the name its connection signs as). Never a file
+    of the repository: a cloned one would run its own command on every redraw. Read from a cache; one older than
+    BADGE_TTL is refreshed in the line's own run — the command its direct child, no shell and no window, ended past
+    BADGE_RUN_S — since the command may read this console from the process tree (a detached refresher outlives the
+    line and loses it). A hung command costs one draw in BADGE_TTL at most BADGE_RUN_S, and shows nothing."""
+    ws = d.get("workspace") or {}
+    root, sid = ws.get("project_dir") or ws.get("current_dir") or "", d.get("session_id", "")
+    norm = lambda p: os.path.normcase(os.path.abspath(p)) if p else ""
+    argv = next((v for k, v in (c.get("badges") or {}).items() if norm(k) == norm(root)), None)
+    if not (isinstance(argv, list) and argv and sid):
+        return ""
+    cache = os.path.join(os.path.expanduser("~"), ".claude", "ctx", f"{sid}.badge")
+    try:
+        if time.time() - os.path.getmtime(cache) <= BADGE_TTL:
+            return open(cache, encoding="utf-8").read()
+    except OSError:
+        pass
+    import subprocess
+    out = ""
+    try:
+        p = subprocess.Popen([str(a) for a in argv], cwd=root, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                             stderr=subprocess.DEVNULL, text=True, encoding="utf-8",
+                             creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+        try:
+            out = (p.communicate(timeout=BADGE_RUN_S)[0] or "").strip()
+        except subprocess.TimeoutExpired:
+            p.kill()
+            p.communicate()
+        out = out.splitlines()[0][:24] if out else ""
+    except Exception:
+        out = ""
+    try:
+        with open(tmp := f"{cache}.{os.getpid()}.new", "w", encoding="utf-8") as f:
+            f.write(out)
+        os.replace(tmp, cache)                 # …whole, whichever of two redraws writes last
+    except OSError:
+        pass
+    return out
+
+
 def main(d):
     ctxlib.utf8_io()
     c = ctxlib.cfg()
     cols = int(os.environ.get("COLUMNS") or 0)
     l, r = left(d, c), right(d)
+    if b := badge(d, c):
+        l = f"{MAG}{b}{R} {l}"
     items = swarm_items(c, d.get("session_id")) if ctxlib.panel_on() else []
 
     # Layout: own session on the left, then the swarm, the limits on the right. The order of
