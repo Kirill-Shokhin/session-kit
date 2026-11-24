@@ -275,6 +275,7 @@ kit/
 | `regate_pct` | 10 | window growth after which the critic gate is armed again |
 | `mode` | autonomous | which body of rules is injected: `autonomous` or `stepwise` |
 | `fallback_window` | 200000 | window size if it was not reported (can be set via `CLAUDE_CTX_WINDOW`) |
+| `badges` | — | `{project root: [program, arg, …]}`: a word shown first on the status line for that project, its command's first output line (e.g. a gfso project: `gfso whoami`, the name the console signs as); asked at most every 15 s, killed past 1.5 s, no shell, no window — set here only, never by a repository |
 
 The closing itself costs 1–5% of the window, so the reserve from 60% is more than enough: the
 threshold was chosen for the sake of the quality of judgment, not for the room the ritual takes.
